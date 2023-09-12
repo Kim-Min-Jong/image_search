@@ -17,11 +17,13 @@ class SaveFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_save, container, false)
     }
 
     companion object {
         const val TAG = "SAVE_FRAGMENT"
         fun newInstance() = SaveFragment()
+
     }
 }
