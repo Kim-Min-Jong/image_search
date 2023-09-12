@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ImageSearch</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">검색결과</string>
+    <string name="save">내 보관함</string>
+    <string name="put_in_search_text">검색어를 입력하세요.</string>
 </resources>
