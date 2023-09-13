@@ -1,4 +1,4 @@
-package com.sparta.imagesearch.view
+package com.sparta.imagesearch.view.save
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,34 +1,25 @@
-package com.sparta.imagesearch.view
+package com.sparta.imagesearch.view.search
 
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.sparta.imagesearch.R
-import com.sparta.imagesearch.data.model.IntegratedModel
-import com.sparta.imagesearch.data.repository.Repository
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
-import com.sparta.imagesearch.extension.StringExtension.dateToString
-import com.sparta.imagesearch.extension.StringExtension.stringToDateTime
 import com.sparta.imagesearch.key.Key.API_KEY
-import com.sparta.imagesearch.preference.PreferenceUtils
+import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.view.adapter.SearchListAdapter
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 class SearchFragment : Fragment() {
@@ -36,8 +27,6 @@ class SearchFragment : Fragment() {
     private val binding: FragmentSearchBinding
         get() = _binding!!
 
-
-    private val scope = MainScope()
     private var page = 1
     private var searchText = ""
 
@@ -45,6 +34,11 @@ class SearchFragment : Fragment() {
     private var isEnd = true
     private val searchAdapter by lazy {
         SearchListAdapter()
+    }
+
+    //    private val searchViewModel: SearchViewModel by viewModels{ SearchViewModelFactory() }
+    private val searchViewModel by lazy {
+        ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +49,7 @@ class SearchFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -88,37 +82,28 @@ class SearchFragment : Fragment() {
     }
 
     private fun fetchItems(query: String, page: Int) = with(binding) {
-        scope.launch {
-            try {
-                val list = arrayListOf<IntegratedModel>()
-                val images = Repository.getImages(AUTHORIZATION, query, page)
-                val clips = Repository.getClips(AUTHORIZATION, query, page)
-                images?.documents?.forEach {
-                    list.add(
-                        IntegratedModel(
-                            it.thumbnailUrl,
-                            "[Image]" + it.displaySitename,
-                            it.datetime.dateToString().stringToDateTime(),
-                            it.height,
-                            it.width
-                        )
-                    )
-                }
-                clips?.documents?.forEach {
-                    list.add(
-                        IntegratedModel(
-                            it?.thumbnail,
-                            "[Clip]" + it?.title,
-                            it?.datetime!!.dateToString().stringToDateTime()
-                        )
-                    )
+        searchViewModel.getDatas(AUTHORIZATION, query, page)
+        searchViewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                is APIResponse.Error -> {
+                    searchRecyclerView.isVisible = false
+                    progressbar.isVisible = false
+                    requireActivity().toast("오류 발생")
+                    Log.e("error", it.message.toString())
                 }
 
-                searchAdapter.addItems(list.sortedByDescending { it.dateTime })
-                progressbar.isVisible = false
-            } catch (e: Exception) {
-                requireActivity().toast("오류발생")
-                e.printStackTrace()
+                is APIResponse.Loading -> {
+                    progressbar.isVisible = true
+                    searchRecyclerView.isVisible = false
+                }
+
+                is APIResponse.Success -> {
+                    searchRecyclerView.isVisible = true
+                    it.data?.let { data ->
+                        searchAdapter.addItems(data.sortedByDescending { time -> time.dateTime })
+                    }
+                    progressbar.isVisible = false
+                }
             }
         }
     }
