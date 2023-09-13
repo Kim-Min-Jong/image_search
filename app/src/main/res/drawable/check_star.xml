@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 체크박스 해제 상태 -->
-    <item android:state_checked="false"
-        android:drawable="@drawable/ic_star"/>
+    <item android:drawable="@drawable/ic_star" android:state_checked="false" />
     <!-- 체크박스 선택 상태 -->
-    <item android:state_checked="true"
-        android:drawable="@drawable/ic_star_favorite"/>
+    <item android:drawable="@drawable/ic_star_favorite" android:state_checked="true" />
 </selector>

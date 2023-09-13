@@ -15,26 +15,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher"
-        />
+        tools:src="@mipmap/ic_launcher" />
+
     <CheckBox
         android:id="@+id/liked_check_box"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_margin="4dp"
         android:background="@drawable/check_star"
         android:button="@null"
-        app:layout_constraintTop_toTopOf="@id/thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="@id/thumbnail_image_view"
-        android:layout_margin="4dp" />
+        app:layout_constraintTop_toTopOf="@id/thumbnail_image_view" />
+
     <TextView
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="16sp"
+        android:maxLines="1"
         android:singleLine="true"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumbnail_image_view"
@@ -45,8 +46,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_text_view"
