@@ -13,13 +13,14 @@ import com.sparta.imagesearch.data.repository.SearchRepository
 import com.sparta.imagesearch.extension.StringExtension.dateToString
 import com.sparta.imagesearch.extension.StringExtension.stringToDateTime
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 class SearchViewModel(
     private val searchRepository: SearchRepository
-): ViewModel() {
+) : ViewModel() {
     private val _state: MutableLiveData<APIResponse<List<IntegratedModel>>> = MutableLiveData()
     val state: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _state
@@ -29,31 +30,51 @@ class SearchViewModel(
     private var responseImage: ResponseImage? = null
     private val list = arrayListOf<IntegratedModel>()
 
-    fun getDatas(token: String, query: String, page: Int) {
-        _state.value = APIResponse.Loading(emptyList())
-       getImages(token, query, page)
-       getClips(token, query, page)
+    private var _isEndClip: Boolean? = null
+    private var _isEndImage: Boolean? = null
+    val isEndClip: Boolean?
+        get() = _isEndClip
+    val isEndImage: Boolean?
+        get() = _isEndImage
+
+
+    fun clearList() = list.clear()
+
+    fun getDatas(token: String, query: String, page: Int, scrollFlag: Int) {
+        // 맨 밑에서 스크롤 시 로딩을 하지 않도록
+        if(scrollFlag == SCROLL_DEFAULT) {
+            _state.value = APIResponse.Loading(emptyList())
+        } else {
+            _state.value = APIResponse.Loading()
+        }
+        getImages(token, query, page)
+        getClips(token, query, page)
     }
 
     private fun getClips(token: String, query: String, page: Int) {
+        // 다음 페이지로 넘기기 위해 이전 값들을 없앰
+        clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = searchRepository.getClips(token, query, page)
             responseClip = response.data
-            result(response,clipList)
+            result(response, clipList)
             responseClip?.documents?.forEach {
                 list.add(
-                        IntegratedModel(
-                            it?.thumbnail,
-                            "[Clip] " + it?.title,
-                            it?.datetime!!.dateToString().stringToDateTime()
-                        )
+                    IntegratedModel(
+                        it?.thumbnail,
+                        "[Clip] " + it?.title,
+                        it?.datetime!!.dateToString().stringToDateTime()
                     )
+                )
+                _isEndClip = responseClip?.meta?.isEnd
             }
-            _state.postValue(APIResponse.Success(list))
+            _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))
         }
     }
 
     private fun getImages(token: String, query: String, page: Int) {
+        // 다음 페이지로 넘기기 위해 이전 값들을 없앰
+        clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = searchRepository.getImages(token, query, page)
             responseImage = response.data
@@ -68,10 +89,12 @@ class SearchViewModel(
                         it.width
                     )
                 )
+                _isEndImage = responseImage?.meta?.isEnd
             }
-            _state.postValue(APIResponse.Success(list))
+            _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))
         }
     }
+
     private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {
         try {
             if (response.data != null) {

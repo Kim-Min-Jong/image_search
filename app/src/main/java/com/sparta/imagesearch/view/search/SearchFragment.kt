@@ -4,21 +4,25 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.key.Key.API_KEY
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
+import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.adapter.SearchListAdapter
 
 
@@ -32,15 +36,34 @@ class SearchFragment : Fragment() {
     private var searchText = ""
 
     //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
-    private var isEnd = true
     private val searchAdapter by lazy {
         SearchListAdapter()
     }
 
-    //    private val searchViewModel: SearchViewModel by viewModels{ SearchViewModelFactory() }
     private val searchViewModel by lazy {
         ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
     }
+    private val inputMethodManager by lazy {
+        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    }
+
+
+    private val endScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!binding.searchRecyclerView.canScrollVertically(1)) {
+                    println(searchViewModel.isEndClip.toString() + searchViewModel.isEndImage.toString())
+                    if (!searchViewModel.isEndClip!! && !searchViewModel.isEndImage!!) {
+                        page++
+                        println(page)
+                        fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
+                    }
+                }
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,56 +82,82 @@ class SearchFragment : Fragment() {
         searchRecyclerView.run {
             adapter = searchAdapter
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            addOnScrollListener(endScrollListener)
         }
 
         searchButton.setOnClickListener {
-            fetchItems(searchEditText.text.toString(), page)
+            settingVirtualKeyboard()
+            if (searchEditText.text.isEmpty()) {
+                requireActivity().toast("검색어를 입력해주세요.")
+                return@setOnClickListener
+            }
+            fetchItems(searchEditText.text.toString(), page, SCROLL_DEFAULT)
         }
 
         searchEditText.setOnEditorActionListener { editText, actionId, keyEvent ->
-            searchText(editText)
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                searchText(editText)
+            }
             true
         }
     }
 
-
-    private fun searchText(editText: TextView) = with(binding) {
-        // 가상 키보드 설정
-        val inputMethodManager =
-            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    private fun settingVirtualKeyboard() {
         inputMethodManager.hideSoftInputFromWindow(
             requireActivity().currentFocus?.windowToken,
             0
         )
+    }
+
+    private fun searchText(editText: TextView) = with(binding) {
+        // 가상 키보드 설정
+        if (editText.text.isEmpty()) {
+            requireActivity().toast("검색어를 입력해주세요.")
+            return
+        }
+        settingVirtualKeyboard()
         progressbar.isVisible = true
         requireActivity().currentFocus?.clearFocus()
 
         searchText = editText.text.toString()
-        fetchItems(editText.text.toString(), page)
+        fetchItems(editText.text.toString(), page, SCROLL_DEFAULT)
     }
 
-    private fun fetchItems(query: String, page: Int) = with(binding) {
-        searchViewModel.getDatas(AUTHORIZATION, query, page)
+    private fun fetchItems(query: String, page: Int, scrollFlag: Int) = with(binding) {
+        searchViewModel.getDatas(AUTHORIZATION, query, page, scrollFlag)
         searchViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is APIResponse.Error -> {
                     searchRecyclerView.isVisible = false
                     progressbar.isVisible = false
+                    updateProgressbar.isVisible = false
                     requireActivity().toast("오류 발생")
                     Log.e("error", it.message.toString())
                 }
 
                 is APIResponse.Loading -> {
-                    progressbar.isVisible = true
-                    searchRecyclerView.isVisible = false
+                    if (it.data == null) {
+                        progressbar.isVisible = false
+                        updateProgressbar.isVisible = true
+                        searchRecyclerView.isVisible = true
+                    } else {
+                        updateProgressbar.isVisible = false
+                        progressbar.isVisible = true
+                        searchRecyclerView.isVisible = false
+                    }
                 }
 
                 is APIResponse.Success -> {
                     searchRecyclerView.isVisible = true
                     it.data?.let { data ->
-                        searchAdapter.addItems(data.sortedByDescending { time -> time.dateTime })
+//                        val sortedData = data.sortedByDescending { time -> time.dateTime }
+                        when (scrollFlag) {
+                            SCROLL_DEFAULT -> searchAdapter.addItems(data)
+                            SCROLL_BOTTOM -> searchAdapter.updateItems(data)
+                        }
                     }
                     progressbar.isVisible = false
+                    updateProgressbar.isVisible = false
                 }
             }
         }

@@ -24,6 +24,11 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchViewHolde
         _list.addAll(items)
         notifyDataSetChanged()
     }
+    fun updateItems(items: List<IntegratedModel>) {
+        _list.addAll(items)
+        notifyItemInserted(itemCount - 1)
+    }
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
@@ -46,6 +51,7 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchViewHolde
             false -> checkBox.setBackgroundResource(R.drawable.ic_star)
         }
     }
+
     inner class SearchViewHolder(private val binding: ItemSearchBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
