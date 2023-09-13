@@ -17,15 +17,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@mipmap/ic_launcher"
         />
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_star"
-        android:background="@android:color/transparent"
+    <CheckBox
+        android:id="@+id/liked_check_box"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/check_star"
+        android:button="@null"
         app:layout_constraintTop_toTopOf="@id/thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="@id/thumbnail_image_view"
-        android:layout_margin="4dp"
-        />
+        android:layout_margin="4dp" />
     <TextView
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
