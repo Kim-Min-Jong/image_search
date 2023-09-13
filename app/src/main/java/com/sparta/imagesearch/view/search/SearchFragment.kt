@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
@@ -60,6 +61,10 @@ class SearchFragment : Fragment() {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
 
+        searchButton.setOnClickListener {
+            fetchItems(searchEditText.text.toString(), page)
+        }
+
         searchEditText.setOnEditorActionListener { editText, actionId, keyEvent ->
             searchText(editText)
             true
@@ -68,6 +73,7 @@ class SearchFragment : Fragment() {
 
 
     private fun searchText(editText: TextView) = with(binding) {
+        // 가상 키보드 설정
         val inputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(
