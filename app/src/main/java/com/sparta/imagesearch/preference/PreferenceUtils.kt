@@ -36,7 +36,7 @@ class PreferenceUtils(context: Context) {
         editor.apply()
     }
 
-    fun getModel(key: String) : List<String> {
+    fun getModels(key: String) : List<String> {
         // json 값을 받아와 리스트로 바꿀 준비
         val jsonList = prefs.getString(key, null)
         val list = ArrayList<String>()

@@ -3,6 +3,8 @@ package com.sparta.imagesearch.view.search
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -17,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.key.Key.API_KEY
@@ -24,6 +27,9 @@ import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.adapter.SearchListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,11 +43,22 @@ class SearchFragment : Fragment() {
 
     //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
     private val searchAdapter by lazy {
-        SearchListAdapter()
+        SearchListAdapter(onStarChecked = { model ->
+            when(model.isLiked) {
+                true -> addModelFromPreference(model)
+                false -> removeModelFromPreference(model)
+            }
+
+        },
+        getModels = { url ->
+            getModelFromPreference(url)
+        })
     }
 
+
+
     private val searchViewModel by lazy {
-        ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
+        ViewModelProvider(this, SearchViewModelFactory(requireActivity()))[SearchViewModel::class.java]
     }
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -100,6 +117,7 @@ class SearchFragment : Fragment() {
             }
             true
         }
+
     }
 
     private fun settingVirtualKeyboard() {
@@ -161,8 +179,29 @@ class SearchFragment : Fragment() {
                 }
             }
         }
+//        searchViewModel.prefsState.observe(viewLifecycleOwner) {
+//            when(it.isEmpty()) {
+//                true ->  searchAdapter.notifyModel(false)
+//                false -> searchAdapter.notifyModel(true)
+//            }
+//        }
     }
-
+    private fun addModelFromPreference(model: IntegratedModel) {
+        searchViewModel.addModelFromPreference(model)
+    }
+    private fun removeModelFromPreference(model: IntegratedModel) {
+        searchViewModel.removeModelFromPreference(model)
+    }
+    private fun getModelFromPreference(url: String): List<String> {
+        var list: List<String> = emptyList()
+        CoroutineScope(Dispatchers.Main).launch {
+            list = searchViewModel.getModelFromPreference(url)
+        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            println(list)
+        },100)
+        return list
+    }
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

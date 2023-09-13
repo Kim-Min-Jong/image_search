@@ -1,13 +1,16 @@
 package com.sparta.imagesearch.data.repository
 
+import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.data.model.clip.ResponseClip
 import com.sparta.imagesearch.data.model.image.ResponseImage
+import com.sparta.imagesearch.data.repository.datasource.SaveDataSource
 import com.sparta.imagesearch.data.repository.datasource.SearchDataSource
 import com.sparta.imagesearch.util.APIResponse
 
-class SearchRepositoryImpl(
-    private val searchDataSource: SearchDataSource
-) : SearchRepository {
+class ModelRepositoryImpl(
+    private val searchDataSource: SearchDataSource,
+    private val saveDataSource: SaveDataSource
+) : ModelRepository {
     override suspend fun getClips(
         token: String,
         query: String?,
@@ -34,6 +37,19 @@ class SearchRepositoryImpl(
             }
         }
         return APIResponse.Error(response.message())
+    }
+
+
+    override suspend fun getModels(key: String): List<String> {
+        return saveDataSource.getModels(key)
+    }
+
+    override suspend fun setModel(key: String, value: IntegratedModel) {
+        return saveDataSource.setModel(key, value)
+    }
+
+    override suspend fun removeModel(key: String) {
+        return saveDataSource.removeModel(key)
     }
 
 }
