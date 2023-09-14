@@ -37,33 +37,32 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding: FragmentSearchBinding
         get() = _binding!!
-
     private var page = 1
     private var searchText = ""
 
     //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
     private val searchAdapter by lazy {
-        SearchListAdapter(onStarChecked = { model ->
-            when(model.isLiked) {
-                true -> addModelFromPreference(model)
-                false -> removeModelFromPreference(model)
-            }
-
-        },
-        getModels = { url ->
-            getModelFromPreference(url)
-        })
+        SearchListAdapter(
+            onStarChecked = { model ->
+                when (model.isLiked) {
+                    true -> addModelFromPreference(model)
+                    false -> removeModelFromPreference(model)
+                }
+            },
+            getModels = { url ->
+                getModelFromPreference(url)
+            })
     }
 
-
-
     private val searchViewModel by lazy {
-        ViewModelProvider(this, SearchViewModelFactory(requireActivity()))[SearchViewModel::class.java]
+        ViewModelProvider(
+            this,
+            SearchViewModelFactory(requireActivity())
+        )[SearchViewModel::class.java]
     }
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
-
 
     private val endScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -73,14 +72,12 @@ class SearchFragment : Fragment() {
                     println(searchViewModel.isEndClip.toString() + searchViewModel.isEndImage.toString())
                     if (!searchViewModel.isEndClip!! && !searchViewModel.isEndImage!!) {
                         page++
-                        println(page)
                         fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
                     }
                 }
             }
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,7 +114,6 @@ class SearchFragment : Fragment() {
             }
             true
         }
-
     }
 
     private fun settingVirtualKeyboard() {
@@ -179,29 +175,41 @@ class SearchFragment : Fragment() {
                 }
             }
         }
-//        searchViewModel.prefsState.observe(viewLifecycleOwner) {
-//            when(it.isEmpty()) {
-//                true ->  searchAdapter.notifyModel(false)
-//                false -> searchAdapter.notifyModel(true)
-//            }
-//        }
     }
+
     private fun addModelFromPreference(model: IntegratedModel) {
         searchViewModel.addModelFromPreference(model)
     }
+
     private fun removeModelFromPreference(model: IntegratedModel) {
         searchViewModel.removeModelFromPreference(model)
     }
-    private fun getModelFromPreference(url: String): List<String> {
-        var list: List<String> = emptyList()
-        CoroutineScope(Dispatchers.Main).launch {
-            list = searchViewModel.getModelFromPreference(url)
+
+    private fun getModelFromPreference(url: String) {
+        searchViewModel.getModelFromPreference(url)
+        searchViewModel.prefsState.observe(viewLifecycleOwner) {
+            when (it) {
+                is APIResponse.Error -> { requireActivity().toast(it.message.toString())}
+                is APIResponse.Loading -> {}
+                is APIResponse.Success -> {
+                    println(it.data)
+                    when (it.data?.isEmpty()) {
+                        true -> searchAdapter.notifyModel(false)
+                        else -> searchAdapter.notifyModel(true)
+                    }
+                }
+            }
         }
-        Handler(Looper.getMainLooper()).postDelayed({
-            println(list)
-        },100)
-        return list
+//        var list: List<String> = emptyList()
+//        CoroutineScope(Dispatchers.Main).launch {
+//            list = searchViewModel.getModelFromPreference(url)
+//        }
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            println(list)
+//        },100)
+//        return list
     }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

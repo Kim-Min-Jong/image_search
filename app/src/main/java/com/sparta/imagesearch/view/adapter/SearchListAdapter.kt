@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 @RequiresApi(Build.VERSION_CODES.O)
 class SearchListAdapter(
     private val onStarChecked: (IntegratedModel) -> Unit,
-    private val getModels:(String) -> List<String>
+    private val getModels: (String) -> Unit
 ) : RecyclerView.Adapter<SearchListAdapter.SearchViewHolder>() {
     private val _list = arrayListOf<IntegratedModel>()
     val list: List<IntegratedModel>
@@ -66,7 +66,7 @@ class SearchListAdapter(
     inner class SearchViewHolder(
         private val binding: ItemSearchBinding,
         private val onStarChecked: (IntegratedModel) -> Unit,
-        private val getModels:(String) -> List<String>
+        private val getModels: (String) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -81,30 +81,27 @@ class SearchListAdapter(
             timeTextView.text = model.dateTime.dateToString()
             likedCheckBox.run {
                 val prefs = PreferenceUtils(context).getModels(model.thumbnailUrl!!)
-//                val prefs = getModels(model.thumbnailUrl!!)
+//                getModels(model.thumbnailUrl!!)
                 isChecked = prefs.isNotEmpty()
+//                isChecked = isListEmpty
                 isLikedResources(isChecked, this)
                 setOnCheckedChangeListener { _, isChecked ->
-//                    model.isLiked = isChecked
                     isLikedResources(isChecked, this)
-//                    when(isChecked) {
-//                        true -> {
-//                            PreferenceUtils(context).setModel(model.thumbnailUrl , model)
-//                        }
-//                        false -> {
-//                            PreferenceUtils(context).removeModel(model.thumbnailUrl)
-//                        }
-//                    }
-//                    if (model.isLiked != isChecked) {
-                        onStarChecked(
-                            model.copy(
-                                isLiked = isChecked
-                            )
-                        )
-//                    }
+                    when(isChecked) {
+                        true -> {
+                            PreferenceUtils(context).setModel(model.thumbnailUrl , model)
+                        }
+                        false -> {
+                            PreferenceUtils(context).removeModel(model.thumbnailUrl)
+                        }
+                    }
+//                    onStarChecked(
+//                        model.copy(
+//                            isLiked = isChecked
+//                        )
+//                    )
                 }
             }
-
         }
     }
 }

@@ -25,9 +25,10 @@ class SearchViewModel(
     private val _state: MutableLiveData<APIResponse<List<IntegratedModel>>> = MutableLiveData()
     val state: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _state
+    private val _prefsState: MutableLiveData<APIResponse<List<String>>> = MutableLiveData()
+    val prefsState: LiveData<APIResponse<List<String>>>
+        get() = _prefsState
 
-    private val clipList: MutableLiveData<APIResponse<ResponseClip>> = MutableLiveData()
-    private val imageList: MutableLiveData<APIResponse<ResponseImage>> = MutableLiveData()
     private var responseClip: ResponseClip? = null
     private var responseImage: ResponseImage? = null
     private val list = arrayListOf<IntegratedModel>()
@@ -59,7 +60,6 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getClips(token, query, page)
             responseClip = response.data
-            result(response, clipList)
             responseClip?.documents?.forEach {
                 list.add(
                     IntegratedModel(
@@ -80,7 +80,6 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getImages(token, query, page)
             responseImage = response.data
-            result(response, imageList)
             responseImage?.documents?.forEach {
                 list.add(
                     IntegratedModel(
@@ -113,11 +112,12 @@ class SearchViewModel(
         }
     }
 
-    suspend fun getModelFromPreference(url: String): List<String> {
-        val model = viewModelScope.async(Dispatchers.IO) {
-            modelRepository.getModels(url)
-        }
-        return model.await()
+     fun getModelFromPreference(url: String) {
+         _prefsState.value = APIResponse.Loading()
+         viewModelScope.launch(Dispatchers.IO) {
+            val response = modelRepository.getModels(url)
+             result(response, _prefsState)
+         }
     }
 
     private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {

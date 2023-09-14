@@ -8,7 +8,7 @@ import com.sparta.imagesearch.util.APIResponse
 interface ModelRepository {
     suspend fun getClips(token: String, query: String?, page: Int): APIResponse<ResponseClip>
     suspend fun getImages(token: String, query: String?, page: Int): APIResponse<ResponseImage>
-    suspend fun getModels(key: String) : List<String>
+    suspend fun getModels(key: String) : APIResponse<List<String>>
     suspend fun setModel(key: String, value: IntegratedModel)
     suspend fun removeModel(key: String)
 }
