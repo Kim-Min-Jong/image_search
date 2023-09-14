@@ -66,17 +66,6 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
                 val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
                 isChecked = prefs != null
                 isLikedResources(isChecked, this)
-                setOnCheckedChangeListener { _, isChecked ->
-                    isLikedResources(isChecked, this)
-                    when(isChecked) {
-                        true -> {
-//                            PreferenceUtils(context).setModel(model.thumbnailUrl , model)
-                        }
-                        false -> {
-//                            PreferenceUtils(context).removeModel(model.thumbnailUrl)
-                        }
-                    }
-                }
             }
         }
     }
