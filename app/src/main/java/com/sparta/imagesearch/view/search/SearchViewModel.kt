@@ -1,7 +1,6 @@
 package com.sparta.imagesearch.view.search
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,21 +10,19 @@ import com.sparta.imagesearch.data.model.clip.ResponseClip
 import com.sparta.imagesearch.data.model.image.ResponseImage
 import com.sparta.imagesearch.data.repository.ModelRepository
 import com.sparta.imagesearch.extension.StringExtension.dateToString
-import com.sparta.imagesearch.extension.StringExtension.stringToDateTime
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 class SearchViewModel(
     private val modelRepository: ModelRepository
 ) : ViewModel() {
     private val _state: MutableLiveData<APIResponse<List<IntegratedModel>>> = MutableLiveData()
     val state: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _state
-    private val _prefsState: MutableLiveData<APIResponse<List<String>>> = MutableLiveData()
-    val prefsState: LiveData<APIResponse<List<String>>>
+    private val _prefsState: MutableLiveData<APIResponse<IntegratedModel>> = MutableLiveData()
+    val prefsState: LiveData<APIResponse<IntegratedModel>>
         get() = _prefsState
 
     private var responseClip: ResponseClip? = null
@@ -64,7 +61,7 @@ class SearchViewModel(
                     IntegratedModel(
                         it?.thumbnail,
                         "[Clip] " + it?.title,
-                        it?.datetime!!.dateToString().stringToDateTime()
+                        it?.datetime!!.dateToString()
                     )
                 )
                 _isEndClip = responseClip?.meta?.isEnd
@@ -84,7 +81,7 @@ class SearchViewModel(
                     IntegratedModel(
                         it.thumbnailUrl,
                         "[Image] " + it.displaySitename,
-                        it.datetime.dateToString().stringToDateTime(),
+                        it.datetime.dateToString(),
                         it.height,
                         it.width
                     )

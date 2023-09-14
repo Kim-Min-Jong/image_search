@@ -9,7 +9,6 @@ object LocalDateExtension {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun LocalDateTime.dateToString(): String {
-        val str = this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        return str
+        return format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
     }
 }

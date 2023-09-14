@@ -2,56 +2,39 @@ package com.sparta.imagesearch.preference
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 import com.sparta.imagesearch.data.model.IntegratedModel
-import org.json.JSONArray
-import org.json.JSONException
+import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 
 class PreferenceUtils(context: Context) {
     private val prefName = "prefs"
     private val prefs = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE)
-
-    var model:String?
-        get() = prefs.getString("session", null)
-        set(value){
-            prefs.edit().putString("session", value).apply()
-        }
+    val pref: SharedPreferences
+        get() = prefs
 
     fun setModel(key: String, value: IntegratedModel?) {
-        val jsonArray = JSONArray()
         val editor = prefs.edit()
-        jsonArray.run {
-            put(value?.thumbnailUrl)
-            put(value?.title)
-            put(value?.dateTime)
-            put(value?.width)
-            put(value?.height)
-            put(value?.isLiked)
-        }
+        val model = Gson().toJson(value, IntegratedModel::class.java)
         if(value != null){
-            editor.putString(key, jsonArray.toString())
+            editor.putString(key, model)
         } else {
             editor.putString(key, null)
         }
         editor.apply()
     }
 
-    fun getModels(key: String) : List<String> {
+    fun getModel(key: String): IntegratedModel? {
         // json 값을 받아와 리스트로 바꿀 준비
         val jsonList = prefs.getString(key, null)
-        val list = ArrayList<String>()
-        jsonList?.let { json ->
-            try {
-                val jsonArray = JSONArray(json)
-                for(i in 0 until jsonArray.length()) {
-                    val str = jsonArray.optString(i)
-                    list.add(str)
-                }
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-        }
-        return list
+        val gson = GsonBuilder()
+        return gson.gsonToIntegrateModel(jsonList)
+    }
+
+    fun getAllModels(): MutableCollection<out Any?> {
+        return prefs.all.values
     }
 
     fun removeModel(key: String) {

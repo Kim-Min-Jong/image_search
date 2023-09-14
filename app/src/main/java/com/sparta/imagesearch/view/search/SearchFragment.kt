@@ -1,10 +1,7 @@
 package com.sparta.imagesearch.view.search
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -27,12 +24,8 @@ import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.adapter.SearchListAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding: FragmentSearchBinding
@@ -193,10 +186,10 @@ class SearchFragment : Fragment() {
                 is APIResponse.Loading -> {}
                 is APIResponse.Success -> {
                     println(it.data)
-                    when (it.data?.isEmpty()) {
-                        true -> searchAdapter.notifyModel(false)
-                        else -> searchAdapter.notifyModel(true)
-                    }
+//                    when (it.data ) {
+//                        true -> searchAdapter.notifyModel(false)
+//                        else -> searchAdapter.notifyModel(true)
+//                    }
                 }
             }
         }

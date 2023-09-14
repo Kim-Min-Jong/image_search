@@ -40,9 +40,9 @@ class ModelRepositoryImpl(
     }
 
 
-    override suspend fun getModel(key: String): APIResponse<List<String>> {
+    override suspend fun getModel(key: String): APIResponse<IntegratedModel> {
         val response = saveDataSource.getModel(key)
-        if(response.isNotEmpty()) {
+        if(response != null) {
             return APIResponse.Success(response)
         }
         return APIResponse.Error("matching key nothing")
@@ -54,6 +54,14 @@ class ModelRepositoryImpl(
 
     override suspend fun removeModel(key: String) {
         return saveDataSource.removeModel(key)
+    }
+
+    override suspend fun getAllModels(): APIResponse<MutableCollection<out Any?>> {
+        val response = saveDataSource.getAllModels()
+        if(response.isEmpty()) {
+            return APIResponse.Error("보관함 목록이 없습니다.")
+        }
+        return APIResponse.Success(response)
     }
 
 }

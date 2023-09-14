@@ -1,20 +1,16 @@
 package com.sparta.imagesearch.view.adapter
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
-import com.sparta.imagesearch.extension.LocalDateExtension.dateToString
 import com.sparta.imagesearch.preference.PreferenceUtils
 import java.util.concurrent.atomic.AtomicLong
 
-@RequiresApi(Build.VERSION_CODES.O)
 class SearchListAdapter(
     private val onStarChecked: (IntegratedModel) -> Unit,
     private val getModels: (String) -> Unit
@@ -78,14 +74,15 @@ class SearchListAdapter(
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
-            timeTextView.text = model.dateTime.dateToString()
+            timeTextView.text = model.dateTime
             likedCheckBox.run {
-                val prefs = PreferenceUtils(context).getModels(model.thumbnailUrl!!)
+                val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
 //                getModels(model.thumbnailUrl!!)
-                isChecked = prefs.isNotEmpty()
+                isChecked = prefs != null
 //                isChecked = isListEmpty
                 isLikedResources(isChecked, this)
                 setOnCheckedChangeListener { _, isChecked ->
+                    model.isLiked = isChecked
                     isLikedResources(isChecked, this)
                     when(isChecked) {
                         true -> {
