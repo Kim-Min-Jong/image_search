@@ -62,8 +62,7 @@ class SearchFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.searchRecyclerView.canScrollVertically(1)) {
-                    println(searchViewModel.isEndClip.toString() + searchViewModel.isEndImage.toString())
-                    if (searchViewModel.isEndClip == true && searchViewModel.isEndImage == true) {
+                    if (searchViewModel.isEndClip == false && searchViewModel.isEndImage == false) {
                         page++
                         fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
                     }
