@@ -61,9 +61,9 @@ class SearchFragment : Fragment() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.searchRecyclerView.canScrollVertically(1)) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.searchRecyclerView.canScrollVertically(1)) {
                     println(searchViewModel.isEndClip.toString() + searchViewModel.isEndImage.toString())
-                    if (!searchViewModel.isEndClip!! && !searchViewModel.isEndImage!!) {
+                    if (searchViewModel.isEndClip == true && searchViewModel.isEndImage == true) {
                         page++
                         fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
                     }
@@ -157,7 +157,6 @@ class SearchFragment : Fragment() {
                 is APIResponse.Success -> {
                     searchRecyclerView.isVisible = true
                     it.data?.let { data ->
-//                        val sortedData = data.sortedByDescending { time -> time.dateTime }
                         when (scrollFlag) {
                             SCROLL_DEFAULT -> searchAdapter.addItems(data)
                             SCROLL_BOTTOM -> searchAdapter.updateItems(data)
