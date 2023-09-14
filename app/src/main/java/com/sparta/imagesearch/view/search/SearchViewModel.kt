@@ -15,7 +15,6 @@ import com.sparta.imagesearch.extension.StringExtension.stringToDateTime
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -115,7 +114,7 @@ class SearchViewModel(
      fun getModelFromPreference(url: String) {
          _prefsState.value = APIResponse.Loading()
          viewModelScope.launch(Dispatchers.IO) {
-            val response = modelRepository.getModels(url)
+            val response = modelRepository.getModel(url)
              result(response, _prefsState)
          }
     }

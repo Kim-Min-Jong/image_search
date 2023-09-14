@@ -6,7 +6,7 @@ import com.sparta.imagesearch.preference.PreferenceUtils
 class SaveDataSourcesImpl(
     private val prefsUtils: PreferenceUtils
 ): SaveDataSource {
-    override suspend fun getModels(key: String): List<String> {
+    override suspend fun getModel(key: String): List<String> {
         return prefsUtils.getModels(key)
     }
 

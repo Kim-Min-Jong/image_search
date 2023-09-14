@@ -40,8 +40,8 @@ class ModelRepositoryImpl(
     }
 
 
-    override suspend fun getModels(key: String): APIResponse<List<String>> {
-        val response = saveDataSource.getModels(key)
+    override suspend fun getModel(key: String): APIResponse<List<String>> {
+        val response = saveDataSource.getModel(key)
         if(response.isNotEmpty()) {
             return APIResponse.Success(response)
         }
