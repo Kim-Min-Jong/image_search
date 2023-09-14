@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sparta.imagesearch.data.repository.ModelRepository
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.view.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,7 @@ class SaveViewModel(
     }
     fun saveClear() {
         viewModelScope.launch(Dispatchers.IO) {
+            App.prefs.clear()
             val response = modelRepository.removeAllModels()
             result(response, _removeState)
         }

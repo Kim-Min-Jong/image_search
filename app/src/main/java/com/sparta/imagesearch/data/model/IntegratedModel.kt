@@ -6,5 +6,6 @@ data class IntegratedModel(
     val dateTime: String?,
     var height: Int = 500,
     var width: Int = 1000,
-    var isLiked: Boolean = false
+    var isLiked: Boolean = false,
+    var ordering: Long = 0L
 )

@@ -2,10 +2,8 @@ package com.sparta.imagesearch.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
 import com.sparta.imagesearch.preference.PreferenceUtils
@@ -44,14 +42,6 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
         notifyDataSetChanged()
     }
 
-    private fun isLikedResources(isLiked: Boolean, checkBox: CheckBox) {
-        when (isLiked) {
-            true -> checkBox.setBackgroundResource(R.drawable.ic_star_favorite)
-            false -> checkBox.setBackgroundResource(R.drawable.ic_star)
-        }
-    }
-
-
     inner class SaveViewHolder(
         private val binding: ItemSearchBinding,
     ) :
@@ -60,7 +50,7 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
         fun bind(model: IntegratedModel) = with(binding) {
             Glide.with(root)
                 .load(model.thumbnailUrl)
-                .override(model.width, model.height)
+                .override(model.width, if(model.height > 1000) model.height / 2 else model.height)
                 .fitCenter()
                 .into(thumbnailImageView)
 
@@ -69,7 +59,6 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
             likedCheckBox.run {
                 val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
                 isChecked = prefs != null
-                isLikedResources(isChecked, this)
             }
         }
     }

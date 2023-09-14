@@ -59,15 +59,18 @@ class SaveFragment : Fragment() {
         saveViewModel.modelState.observe(viewLifecycleOwner) {
             when(it) {
                 is APIResponse.Error -> {
+                    saveRecyclerView.isVisible = false
                     progressbar.isVisible = false
                     noticeTextView.isVisible = true
                     noticeTextView.text = it.message
                 }
                 is APIResponse.Loading -> {
+                    saveRecyclerView.isVisible = false
                     progressbar.isVisible = true
                     noticeTextView.isVisible = false
                 }
                 is APIResponse.Success -> {
+                    saveRecyclerView.isVisible = true
                     progressbar.isVisible = false
                     noticeTextView.isVisible = false
                     val data = it.data
@@ -77,7 +80,7 @@ class SaveFragment : Fragment() {
                             GsonBuilder().gsonToIntegrateModel(item.toString()) ?: continue
                         formattedData.add(gsonData)
                     }
-                    saveAdapter.addItems(formattedData.reversed())
+                    saveAdapter.addItems(formattedData.sortedBy { item -> item.ordering })
                 }
             }
         }
@@ -88,11 +91,15 @@ class SaveFragment : Fragment() {
         saveViewModel.removeState.observe(viewLifecycleOwner) {
             when(it){
                 is APIResponse.Error -> {
+                    noticeTextView.isVisible = false
                     requireActivity().toast(it.message.toString())
                 }
                 is APIResponse.Loading -> {}
                 is APIResponse.Success -> {
                     saveAdapter.clearItems()
+                    saveRecyclerView.isVisible = false
+                    noticeTextView.isVisible = true
+                    noticeTextView.text = "보관함 목록이 없습니다."
                 }
             }
         }
@@ -107,6 +114,5 @@ class SaveFragment : Fragment() {
     companion object {
         const val TAG = "SAVE_FRAGMENT"
         fun newInstance() = SaveFragment()
-
     }
 }

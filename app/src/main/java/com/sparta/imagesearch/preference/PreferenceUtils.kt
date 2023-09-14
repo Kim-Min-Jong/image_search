@@ -11,9 +11,18 @@ import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 
 class PreferenceUtils(context: Context) {
     private val prefName = "prefs"
+    private val orderingPrefsName ="ordering"
     private val prefs = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE)
-    val pref: SharedPreferences
-        get() = prefs
+    private val orderingPrefs = context.getSharedPreferences(orderingPrefsName, Activity.MODE_PRIVATE)
+
+    fun setId(id: Long) {
+        val editor = orderingPrefs.edit()
+        editor.putLong("ordering", id).apply()
+    }
+    fun getId(): Long {
+        return orderingPrefs.getLong("ordering", 0L)
+    }
+
 
     fun setModel(key: String, value: IntegratedModel?) {
         val editor = prefs.edit()
@@ -44,5 +53,6 @@ class PreferenceUtils(context: Context) {
 
     fun clear() {
         prefs.edit().clear().apply()
+        orderingPrefs.edit().clear().apply()
     }
 }

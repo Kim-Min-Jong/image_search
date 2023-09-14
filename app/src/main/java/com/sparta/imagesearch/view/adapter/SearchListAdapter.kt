@@ -9,6 +9,7 @@ import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
 import com.sparta.imagesearch.preference.PreferenceUtils
+import com.sparta.imagesearch.view.App
 import java.util.concurrent.atomic.AtomicLong
 
 class SearchListAdapter(
@@ -18,7 +19,7 @@ class SearchListAdapter(
     private val _list = arrayListOf<IntegratedModel>()
     val list: List<IntegratedModel>
         get() = _list
-    private var prefsId = AtomicLong(0)
+    private var prefsId = App.prefs.getId()
     private var isListEmpty = false
     fun addItems(items: List<IntegratedModel>) {
         _list.clear()
@@ -48,12 +49,6 @@ class SearchListAdapter(
     }
 
     override fun getItemCount(): Int = _list.size
-    private fun isLikedResources(isLiked: Boolean, checkBox: CheckBox) {
-        when (isLiked) {
-            true -> checkBox.setBackgroundResource(R.drawable.ic_star_favorite)
-            false -> checkBox.setBackgroundResource(R.drawable.ic_star)
-        }
-    }
 
     fun notifyModel(b: Boolean) {
         isListEmpty = b
@@ -69,34 +64,23 @@ class SearchListAdapter(
         fun bind(model: IntegratedModel) = with(binding) {
             Glide.with(root)
                 .load(model.thumbnailUrl)
-                .override(model.width, model.height)
+                .override(model.width, if(model.height > 1000) model.height / 2 else model.height)
                 .fitCenter()
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
             timeTextView.text = model.dateTime
             likedCheckBox.run {
-                val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
-//                getModels(model.thumbnailUrl!!)
-                isChecked = prefs != null
-//                isChecked = isListEmpty
-                isLikedResources(isChecked, this)
                 setOnCheckedChangeListener { _, isChecked ->
-                    model.isLiked = isChecked
-                    isLikedResources(isChecked, this)
-                    when(isChecked) {
-                        true -> {
-                            PreferenceUtils(context).setModel(model.thumbnailUrl , model)
-                        }
-                        false -> {
-                            PreferenceUtils(context).removeModel(model.thumbnailUrl)
-                        }
+                    if (model.isLiked != isChecked) {
+                        App.prefs.setId(++prefsId)
+                        onStarChecked(
+                            model.copy(
+                                isLiked = isChecked,
+                                ordering = prefsId
+                            )
+                        )
                     }
-//                    onStarChecked(
-//                        model.copy(
-//                            isLiked = isChecked
-//                        )
-//                    )
                 }
             }
         }
