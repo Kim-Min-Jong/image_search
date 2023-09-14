@@ -48,9 +48,13 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: IntegratedModel) = with(binding) {
+            val dimensionRatio = model.width / model.height.toFloat()
+            val targetWidth = binding.root.resources.displayMetrics.widthPixels -
+                    (binding.root.paddingStart + binding.root.paddingEnd)
+            val targetHeight = (targetWidth * dimensionRatio).toInt()
             Glide.with(root)
                 .load(model.thumbnailUrl)
-                .override(model.width, if(model.height > 1000) model.height / 2 else model.height)
+                .override(model.width, targetHeight)
                 .fitCenter()
                 .into(thumbnailImageView)
 
@@ -59,6 +63,7 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
             likedCheckBox.run {
                 val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
                 isChecked = prefs != null
+                isEnabled = false
             }
         }
     }

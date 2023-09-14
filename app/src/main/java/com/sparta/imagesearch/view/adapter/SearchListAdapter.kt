@@ -62,9 +62,13 @@ class SearchListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: IntegratedModel) = with(binding) {
+            val dimensionRatio = model.width / model.height.toFloat()
+            val targetWidth = binding.root.resources.displayMetrics.widthPixels -
+                    (binding.root.paddingStart + binding.root.paddingEnd)
+            val targetHeight = (targetWidth * dimensionRatio).toInt()
             Glide.with(root)
                 .load(model.thumbnailUrl)
-                .override(model.width, if(model.height > 1000) model.height / 2 else model.height)
+                .override(model.width, targetHeight)
                 .fitCenter()
                 .into(thumbnailImageView)
 
@@ -72,7 +76,7 @@ class SearchListAdapter(
             timeTextView.text = model.dateTime
             likedCheckBox.run {
                 setOnCheckedChangeListener { _, isChecked ->
-                    if (model.isLiked != isChecked) {
+//                    if (model.isLiked != isChecked) {
                         App.prefs.setId(++prefsId)
                         onStarChecked(
                             model.copy(
@@ -80,7 +84,7 @@ class SearchListAdapter(
                                 ordering = prefsId
                             )
                         )
-                    }
+//                    }
                 }
             }
         }
