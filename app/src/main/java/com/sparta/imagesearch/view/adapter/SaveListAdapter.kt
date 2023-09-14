@@ -39,6 +39,10 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
         _list.addAll(items)
         notifyDataSetChanged()
     }
+    fun clearItems() {
+        _list.clear()
+        notifyDataSetChanged()
+    }
 
     private fun isLikedResources(isLiked: Boolean, checkBox: CheckBox) {
         when (isLiked) {

@@ -17,6 +17,11 @@ class SaveViewModel(
     val modelState: LiveData<APIResponse<MutableCollection<out Any?>>>
         get() = _modelState
 
+    private val _removeState: MutableLiveData<APIResponse<Unit>> = MutableLiveData()
+    val removeState: LiveData<APIResponse<Unit>>
+        get() = _removeState
+
+
     fun getAllModels() {
         _modelState.value = APIResponse.Loading()
         viewModelScope.launch(Dispatchers.IO) {
@@ -24,7 +29,12 @@ class SaveViewModel(
             result(response, _modelState)
         }
     }
-
+    fun saveClear() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = modelRepository.removeAllModels()
+            result(response, _removeState)
+        }
+    }
     private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {
         try {
             if (response.data != null) {
@@ -36,4 +46,6 @@ class SaveViewModel(
             livedata.postValue(APIResponse.Error(e.message.toString()))
         }
     }
+
+
 }

@@ -16,8 +16,8 @@ class ModelRepositoryImpl(
         query: String?,
         page: Int
     ): APIResponse<ResponseClip> {
-       val response = searchDataSource.getClips(token, query, page)
-        if(response.isSuccessful) {
+        val response = searchDataSource.getClips(token, query, page)
+        if (response.isSuccessful) {
             response.body()?.let {
                 return APIResponse.Success(it)
             }
@@ -31,7 +31,7 @@ class ModelRepositoryImpl(
         page: Int
     ): APIResponse<ResponseImage> {
         val response = searchDataSource.getImages(token, query, page)
-        if(response.isSuccessful) {
+        if (response.isSuccessful) {
             response.body()?.let {
                 return APIResponse.Success(it)
             }
@@ -42,7 +42,7 @@ class ModelRepositoryImpl(
 
     override suspend fun getModel(key: String): APIResponse<IntegratedModel> {
         val response = saveDataSource.getModel(key)
-        if(response != null) {
+        if (response != null) {
             return APIResponse.Success(response)
         }
         return APIResponse.Error("matching key nothing")
@@ -58,8 +58,16 @@ class ModelRepositoryImpl(
 
     override suspend fun getAllModels(): APIResponse<MutableCollection<out Any?>> {
         val response = saveDataSource.getAllModels()
-        if(response.isEmpty()) {
+        if (response.isEmpty()) {
             return APIResponse.Error("보관함 목록이 없습니다.")
+        }
+        return APIResponse.Success(response)
+    }
+
+    override suspend fun removeAllModels(): APIResponse<Unit> {
+        val response = saveDataSource.removeAllModel()
+        if(response != Unit) {
+            return APIResponse.Error("삭제 실패")
         }
         return APIResponse.Success(response)
     }

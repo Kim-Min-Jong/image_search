@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.gson.GsonBuilder
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSaveBinding
+import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.view.adapter.SaveListAdapter
@@ -47,6 +48,9 @@ class SaveFragment : Fragment() {
             adapter = saveAdapter
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
+        fabDeleteAll.setOnClickListener {
+            removeItems()
+        }
         fetchItems()
     }
 
@@ -74,6 +78,21 @@ class SaveFragment : Fragment() {
                         formattedData.add(gsonData)
                     }
                     saveAdapter.addItems(formattedData.reversed())
+                }
+            }
+        }
+
+    }
+    private fun removeItems() = with(binding) {
+        saveViewModel.saveClear()
+        saveViewModel.removeState.observe(viewLifecycleOwner) {
+            when(it){
+                is APIResponse.Error -> {
+                    requireActivity().toast(it.message.toString())
+                }
+                is APIResponse.Loading -> {}
+                is APIResponse.Success -> {
+                    saveAdapter.clearItems()
                 }
             }
         }

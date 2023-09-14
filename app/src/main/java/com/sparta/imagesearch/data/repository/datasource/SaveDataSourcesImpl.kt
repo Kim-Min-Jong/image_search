@@ -21,4 +21,8 @@ class SaveDataSourcesImpl(
     override suspend fun getAllModels(): MutableCollection<out Any?> {
         return prefsUtils.getAllModels()
     }
+
+    override suspend fun removeAllModel() {
+        return prefsUtils.clear()
+    }
 }

@@ -12,4 +12,5 @@ interface ModelRepository {
     suspend fun setModel(key: String, value: IntegratedModel)
     suspend fun removeModel(key: String)
     suspend fun getAllModels(): APIResponse<MutableCollection<out Any?>>
+    suspend fun removeAllModels(): APIResponse<Unit>
 }
