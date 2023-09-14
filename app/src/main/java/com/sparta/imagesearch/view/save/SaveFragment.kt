@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.gson.GsonBuilder
@@ -15,6 +16,8 @@ import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.view.adapter.SaveListAdapter
+import com.sparta.imagesearch.view.main.MainViewModel
+import com.sparta.imagesearch.view.main.MainViewModelFactory
 
 class SaveFragment : Fragment() {
     private var _binding: FragmentSaveBinding? = null
@@ -29,6 +32,11 @@ class SaveFragment : Fragment() {
             SaveViewModelFactory(requireActivity())
         )[SaveViewModel::class.java]
     }
+//    private val mainViewModel: MainViewModel by activityViewModels {
+//        MainViewModelFactory(
+//            requireActivity()
+//        )
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,25 +65,27 @@ class SaveFragment : Fragment() {
     private fun fetchItems() = with(binding) {
         saveViewModel.getAllModels()
         saveViewModel.modelState.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is APIResponse.Error -> {
                     saveRecyclerView.isVisible = false
                     progressbar.isVisible = false
                     noticeTextView.isVisible = true
                     noticeTextView.text = it.message
                 }
+
                 is APIResponse.Loading -> {
                     saveRecyclerView.isVisible = false
                     progressbar.isVisible = true
                     noticeTextView.isVisible = false
                 }
+
                 is APIResponse.Success -> {
                     saveRecyclerView.isVisible = true
                     progressbar.isVisible = false
                     noticeTextView.isVisible = false
                     val data = it.data
                     val formattedData = arrayListOf<IntegratedModel>()
-                    for(item in data?.toList()!!) {
+                    for (item in data?.toList()!!) {
                         val gsonData =
                             GsonBuilder().gsonToIntegrateModel(item.toString()) ?: continue
                         formattedData.add(gsonData)
@@ -86,14 +96,16 @@ class SaveFragment : Fragment() {
         }
 
     }
+
     private fun removeItems() = with(binding) {
         saveViewModel.saveClear()
         saveViewModel.removeState.observe(viewLifecycleOwner) {
-            when(it){
+            when (it) {
                 is APIResponse.Error -> {
                     noticeTextView.isVisible = false
                     requireActivity().toast(it.message.toString())
                 }
+
                 is APIResponse.Loading -> {}
                 is APIResponse.Success -> {
                     saveAdapter.clearItems()

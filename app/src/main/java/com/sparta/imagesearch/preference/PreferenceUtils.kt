@@ -46,6 +46,10 @@ class PreferenceUtils(context: Context) {
         return prefs.all.values
     }
 
+    fun getAllKeys(): MutableSet<String> {
+        return prefs.all.keys
+    }
+
     fun removeModel(key: String) {
         val editor = prefs.edit()
         editor.remove(key).apply()

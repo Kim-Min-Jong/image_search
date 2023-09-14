@@ -12,6 +12,7 @@ import com.sparta.imagesearch.data.repository.ModelRepository
 import com.sparta.imagesearch.extension.StringExtension.dateToString
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
+import com.sparta.imagesearch.view.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,7 @@ class SearchViewModel(
         get() = _isEndClip
     val isEndImage: Boolean?
         get() = _isEndImage
-
+    private val keyList = App.prefs.getAllKeys()
 
     fun clearList() = list.clear()
 
@@ -57,13 +58,24 @@ class SearchViewModel(
             val response = modelRepository.getClips(token, query, page)
             responseClip = response.data
             responseClip?.documents?.forEach {
-                list.add(
-                    IntegratedModel(
-                        it?.thumbnail,
-                        "[Clip] " + it?.title,
-                        it?.datetime!!.dateToString()
+                if(it?.thumbnail in keyList){
+                    list.add(
+                        IntegratedModel(
+                            it?.thumbnail,
+                            "[Clip] " + it?.title,
+                            it?.datetime!!.dateToString(),
+                            isLiked = true
+                        )
                     )
-                )
+                } else {
+                    list.add(
+                        IntegratedModel(
+                            it?.thumbnail,
+                            "[Clip] " + it?.title,
+                            it?.datetime!!.dateToString()
+                        )
+                    )
+                }
                 _isEndClip = responseClip?.meta?.isEnd
             }
             _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))
@@ -77,15 +89,29 @@ class SearchViewModel(
             val response = modelRepository.getImages(token, query, page)
             responseImage = response.data
             responseImage?.documents?.forEach {
-                list.add(
-                    IntegratedModel(
-                        it.thumbnailUrl,
-                        "[Image] " + it.displaySitename,
-                        it.datetime.dateToString(),
-                        it.height,
-                        it.width
+                if(it.thumbnailUrl in keyList){
+                    list.add(
+                        IntegratedModel(
+                            it.thumbnailUrl,
+                            "[Image] " + it.displaySitename,
+                            it.datetime.dateToString(),
+                            it.height,
+                            it.width,
+                            isLiked = true
+                        )
                     )
-                )
+                } else {
+                    list.add(
+                        IntegratedModel(
+                            it.thumbnailUrl,
+                            "[Image] " + it.displaySitename,
+                            it.datetime.dateToString(),
+                            it.height,
+                            it.width
+                        )
+                    )
+                }
+
                 _isEndImage = responseImage?.meta?.isEnd
             }
             _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))

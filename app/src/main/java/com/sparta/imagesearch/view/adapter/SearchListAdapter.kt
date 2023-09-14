@@ -8,19 +8,16 @@ import com.bumptech.glide.Glide
 import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
-import com.sparta.imagesearch.preference.PreferenceUtils
+import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
 import com.sparta.imagesearch.view.App
-import java.util.concurrent.atomic.AtomicLong
 
 class SearchListAdapter(
-    private val onStarChecked: (IntegratedModel) -> Unit,
-    private val getModels: (String) -> Unit
+    private val onStarChecked: (IntegratedModel) -> Unit
 ) : RecyclerView.Adapter<SearchListAdapter.SearchViewHolder>() {
     private val _list = arrayListOf<IntegratedModel>()
     val list: List<IntegratedModel>
         get() = _list
     private var prefsId = App.prefs.getId()
-    private var isListEmpty = false
     fun addItems(items: List<IntegratedModel>) {
         _list.clear()
         _list.addAll(items)
@@ -40,8 +37,7 @@ class SearchListAdapter(
                 parent,
                 false
             ),
-            onStarChecked,
-            getModels
+            onStarChecked
         )
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
@@ -49,15 +45,15 @@ class SearchListAdapter(
     }
 
     override fun getItemCount(): Int = _list.size
-
-    fun notifyModel(b: Boolean) {
-        isListEmpty = b
+    private fun isLikedResources(isLiked: Boolean, checkBox: CheckBox) {
+        when (isLiked) {
+            true -> checkBox.setBackgroundResource(R.drawable.ic_star_favorite)
+            false -> checkBox.setBackgroundResource(R.drawable.ic_star)
+        }
     }
-
     inner class SearchViewHolder(
         private val binding: ItemSearchBinding,
-        private val onStarChecked: (IntegratedModel) -> Unit,
-        private val getModels: (String) -> Unit
+        private val onStarChecked: (IntegratedModel) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -73,10 +69,12 @@ class SearchListAdapter(
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
-            timeTextView.text = model.dateTime
+            timeTextView.text = model.dateTime?.dateTimeToString()
+            isLikedResources(model.isLiked, likedCheckBox)
             likedCheckBox.run {
                 setOnCheckedChangeListener { _, isChecked ->
-//                    if (model.isLiked != isChecked) {
+                    isLikedResources(isChecked, this)
+                    if (model.isLiked != isChecked) {
                         App.prefs.setId(++prefsId)
                         onStarChecked(
                             model.copy(
@@ -84,7 +82,7 @@ class SearchListAdapter(
                                 ordering = prefsId
                             )
                         )
-//                    }
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -23,7 +24,10 @@ import com.sparta.imagesearch.key.Key.API_KEY
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
+import com.sparta.imagesearch.view.App
 import com.sparta.imagesearch.view.adapter.SearchListAdapter
+import com.sparta.imagesearch.view.main.MainViewModel
+import com.sparta.imagesearch.view.main.MainViewModelFactory
 
 
 class SearchFragment : Fragment() {
@@ -41,10 +45,8 @@ class SearchFragment : Fragment() {
                     true -> addModelFromPreference(model)
                     false -> removeModelFromPreference(model)
                 }
-            },
-            getModels = { url ->
-                getModelFromPreference(url)
-            })
+            }
+        )
     }
 
     private val searchViewModel by lazy {
@@ -53,6 +55,13 @@ class SearchFragment : Fragment() {
             SearchViewModelFactory(requireActivity())
         )[SearchViewModel::class.java]
     }
+
+    private val mainViewModel: MainViewModel by activityViewModels {
+        MainViewModelFactory(
+            requireActivity()
+        )
+    }
+
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
@@ -61,7 +70,10 @@ class SearchFragment : Fragment() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.searchRecyclerView.canScrollVertically(1)) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.searchRecyclerView.canScrollVertically(
+                        1
+                    )
+                ) {
                     if (searchViewModel.isEndClip == false && searchViewModel.isEndImage == false) {
                         page++
                         fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
@@ -93,11 +105,12 @@ class SearchFragment : Fragment() {
 
         searchButton.setOnClickListener {
             settingVirtualKeyboard()
-            if (searchEditText.text.isEmpty()) {
-                requireActivity().toast("검색어를 입력해주세요.")
-                return@setOnClickListener
-            }
-            fetchItems(searchEditText.text.toString(), page, SCROLL_DEFAULT)
+//            if (searchEditText.text.isEmpty()) {
+//                requireActivity().toast("검색어를 입력해주세요.")
+//                return@setOnClickListener
+//            }
+//            fetchItems(searchEditText.text.toString(), page, SCROLL_DEFAULT)
+            searchText(searchEditText)
         }
 
         searchEditText.setOnEditorActionListener { editText, actionId, keyEvent ->
@@ -174,31 +187,6 @@ class SearchFragment : Fragment() {
 
     private fun removeModelFromPreference(model: IntegratedModel) {
         searchViewModel.removeModelFromPreference(model)
-    }
-
-    private fun getModelFromPreference(url: String) {
-        searchViewModel.getModelFromPreference(url)
-        searchViewModel.prefsState.observe(viewLifecycleOwner) {
-            when (it) {
-                is APIResponse.Error -> { requireActivity().toast(it.message.toString())}
-                is APIResponse.Loading -> {}
-                is APIResponse.Success -> {
-                    println(it.data)
-//                    when (it.data ) {
-//                        true -> searchAdapter.notifyModel(false)
-//                        else -> searchAdapter.notifyModel(true)
-//                    }
-                }
-            }
-        }
-//        var list: List<String> = emptyList()
-//        CoroutineScope(Dispatchers.Main).launch {
-//            list = searchViewModel.getModelFromPreference(url)
-//        }
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            println(list)
-//        },100)
-//        return list
     }
 
     override fun onDestroyView() {

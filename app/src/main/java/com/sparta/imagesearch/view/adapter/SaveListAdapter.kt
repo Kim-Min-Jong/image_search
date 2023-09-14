@@ -2,11 +2,12 @@ package com.sparta.imagesearch.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
-import com.sparta.imagesearch.preference.PreferenceUtils
+import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
 
 class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
     private val _list = arrayListOf<IntegratedModel>()
@@ -59,12 +60,8 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
-            timeTextView.text = model.dateTime
-            likedCheckBox.run {
-                val prefs = PreferenceUtils(context).getModel(model.thumbnailUrl!!)
-                isChecked = prefs != null
-                isEnabled = false
-            }
+            timeTextView.text = model.dateTime?.dateTimeToString()
+            likedCheckBox.isVisible = false
         }
     }
 }
