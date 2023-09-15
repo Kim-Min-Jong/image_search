@@ -153,7 +153,7 @@ class SearchFragment : Fragment() {
         requireActivity().currentFocus?.clearFocus()
 
         searchText = editText.text.toString()
-        App.prefs.setSearchKeyword(editText.text.toString())
+        App.prefs.keyword = editText.text.toString()
         fetchItems(editText.text.toString(), page, SCROLL_DEFAULT)
     }
 
@@ -205,7 +205,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun reSearch() {
-        val keyword = App.prefs.getSearchKeyword()
+        val keyword = App.prefs.keyword
         binding.searchEditText.setText(keyword)
         if (keyword != null) {
             fetchItems(keyword, page, SCROLL_DEFAULT)

@@ -17,7 +17,7 @@ class SearchListAdapter(
     private val _list = arrayListOf<IntegratedModel>()
     val list: List<IntegratedModel>
         get() = _list
-    private var prefsId = App.prefs.getId()
+    private var prefsId = App.prefs.id
     fun addItems(items: List<IntegratedModel>) {
         _list.clear()
         _list.addAll(items.toSet())
@@ -74,7 +74,7 @@ class SearchListAdapter(
             likedCheckBox.setOnCheckedChangeListener { _, isChecked ->
                 isLikedResources(isChecked, likedCheckBox)
                 if (model.isLiked != isChecked) {
-                    App.prefs.setId(++prefsId)
+                    App.prefs.id = ++prefsId
                     onStarChecked(
                         model.copy(
                             isLiked = isChecked,

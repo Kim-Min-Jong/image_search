@@ -2,7 +2,6 @@ package com.sparta.imagesearch.preference
 
 import android.app.Activity
 import android.content.Context
-import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -18,25 +17,16 @@ class PreferenceUtils(context: Context) {
     private val orderingPrefs = context.getSharedPreferences(orderingPrefsName, Activity.MODE_PRIVATE)
     private val searchPrefs = context.getSharedPreferences(searchPrefsName, Activity.MODE_PRIVATE)
 
-    fun setSearchKeyword(keyword: String) {
-        val editor = searchPrefs.edit()
-        editor.putString(SEARCH_PREFS_NAME, keyword).apply()
-    }
-    fun getSearchKeyword(): String? {
-        return searchPrefs.getString(SEARCH_PREFS_NAME, null)
-    }
-    fun removeSearchKeyword() {
-        val editor = searchPrefs.edit()
-        editor.remove(SEARCH_PREFS_NAME).apply()
-    }
-
-    fun setId(id: Long) {
-        val editor = orderingPrefs.edit()
-        editor.putLong(ORDERING_PREFS_NAME, id).apply()
-    }
-    fun getId(): Long {
-        return orderingPrefs.getLong(ORDERING_PREFS_NAME, 0L)
-    }
+    var keyword: String?
+        get() = searchPrefs.getString(SEARCH_PREFS_NAME, null)
+        set(value) {
+            searchPrefs.edit().putString(SEARCH_PREFS_NAME, value).apply()
+        }
+    var id: Long
+        get() = searchPrefs.getLong(ORDERING_PREFS_NAME, 0L)
+        set(value) {
+            searchPrefs.edit().putLong(ORDERING_PREFS_NAME, value).apply()
+        }
 
     fun setModel(key: String, value: IntegratedModel?) {
         val editor = prefs.edit()
@@ -56,25 +46,24 @@ class PreferenceUtils(context: Context) {
         return gson.gsonToIntegrateModel(jsonList)
     }
 
-    fun getAllModels(): MutableCollection<out Any?> {
-        return prefs.all.values
-    }
+    fun getAllModels(): MutableCollection<out Any?> = prefs.all.values
 
-    fun getAllKeys(): MutableSet<String> {
-        return prefs.all.keys
-    }
+    fun getAllKeys(): MutableSet<String> = prefs.all.keys
 
     fun removeModel(key: String) {
         val editor = prefs.edit()
         editor.remove(key).apply()
     }
 
+    fun removeSearchKeyword() {
+        val editor = searchPrefs.edit()
+        editor.remove(SEARCH_PREFS_NAME).apply()
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
         orderingPrefs.edit().clear().apply()
     }
-
-
 
     companion object {
         const val MODEL_PREFS_NAME = "prefs"
