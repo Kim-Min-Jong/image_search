@@ -190,7 +190,7 @@ class SearchFragment : Fragment() {
                     // 마지막 스크롤일떄마다 늘어나는 거 확인
                     Log.e("!!!!!size!!!!!!!! ", searchAdapter.currentList.size.toString())
                     it.data?.let { data ->
-                        searchAdapter.submitList(data)
+                        searchAdapter.submitList(data.toSet().toMutableList())
                     }
                     progressbar.isVisible = false
                     updateProgressbar.isVisible = false
