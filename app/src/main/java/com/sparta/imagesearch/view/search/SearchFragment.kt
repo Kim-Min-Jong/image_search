@@ -70,9 +70,8 @@ class SearchFragment : Fragment() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.searchRecyclerView.canScrollVertically(
-                        1
-                    )
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && !binding.searchRecyclerView.canScrollVertically(1)
                 ) {
                     if (searchViewModel.isEndClip == false && searchViewModel.isEndImage == false) {
                         page++
@@ -105,11 +104,6 @@ class SearchFragment : Fragment() {
 
         searchButton.setOnClickListener {
             settingVirtualKeyboard()
-//            if (searchEditText.text.isEmpty()) {
-//                requireActivity().toast("검색어를 입력해주세요.")
-//                return@setOnClickListener
-//            }
-//            fetchItems(searchEditText.text.toString(), page, SCROLL_DEFAULT)
             searchText(searchEditText)
         }
 
@@ -139,6 +133,7 @@ class SearchFragment : Fragment() {
         requireActivity().currentFocus?.clearFocus()
 
         searchText = editText.text.toString()
+        App.prefs.setSearchKeyword(editText.text.toString())
         fetchItems(editText.text.toString(), page, SCROLL_DEFAULT)
     }
 
@@ -192,6 +187,11 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.searchEditText.setText(App.prefs.getSearchKeyword())
     }
 
     companion object {

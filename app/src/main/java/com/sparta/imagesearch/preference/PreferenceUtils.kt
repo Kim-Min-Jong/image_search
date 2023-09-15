@@ -2,7 +2,6 @@ package com.sparta.imagesearch.preference
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -10,19 +9,29 @@ import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 
 class PreferenceUtils(context: Context) {
-    private val prefName = "prefs"
-    private val orderingPrefsName ="ordering"
+    private val prefName = MODEL_PREFS_NAME
+    private val orderingPrefsName = ORDERING_PREFS_NAME
+    private val searchPrefsName = SEARCH_PREFS_NAME
+
     private val prefs = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE)
     private val orderingPrefs = context.getSharedPreferences(orderingPrefsName, Activity.MODE_PRIVATE)
+    private val searchPrefs = context.getSharedPreferences(searchPrefsName, Activity.MODE_PRIVATE)
+
+    fun setSearchKeyword(keyword: String) {
+        val editor = searchPrefs.edit()
+        editor.putString(SEARCH_PREFS_NAME, keyword).apply()
+    }
+    fun getSearchKeyword(): String? {
+        return searchPrefs.getString(SEARCH_PREFS_NAME, null)
+    }
 
     fun setId(id: Long) {
         val editor = orderingPrefs.edit()
-        editor.putLong("ordering", id).apply()
+        editor.putLong(ORDERING_PREFS_NAME, id).apply()
     }
     fun getId(): Long {
-        return orderingPrefs.getLong("ordering", 0L)
+        return orderingPrefs.getLong(ORDERING_PREFS_NAME, 0L)
     }
-
 
     fun setModel(key: String, value: IntegratedModel?) {
         val editor = prefs.edit()
@@ -58,5 +67,10 @@ class PreferenceUtils(context: Context) {
     fun clear() {
         prefs.edit().clear().apply()
         orderingPrefs.edit().clear().apply()
+    }
+    companion object {
+        const val MODEL_PREFS_NAME = "prefs"
+        const val ORDERING_PREFS_NAME = "ordering"
+        const val SEARCH_PREFS_NAME = "searchKey"
     }
 }
