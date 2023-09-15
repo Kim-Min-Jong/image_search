@@ -18,14 +18,16 @@ interface KaKaoSearchService {
     suspend fun getImages(
         @Header("Authorization") token: String,
         @Query("query") query: String?,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("sort") sort: String? = "recency"
     ): Response<ResponseImage>
 
     @GET("vclip")
     suspend fun getClips(
         @Header("Authorization") token: String,
         @Query("query") query: String?,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("sort") sort: String? = "recency"
     ): Response<ResponseClip>
 
 
