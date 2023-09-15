@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.data.repository.ModelRepository
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.view.App
@@ -13,9 +14,9 @@ import kotlinx.coroutines.launch
 class SaveViewModel(
     private val modelRepository: ModelRepository
 ) : ViewModel() {
-    private val _modelState: MutableLiveData<APIResponse<MutableCollection<out Any?>>> =
+    private val _modelState: MutableLiveData<APIResponse<List<IntegratedModel>>> =
         MutableLiveData()
-    val modelState: LiveData<APIResponse<MutableCollection<out Any?>>>
+    val modelState: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _modelState
 
     private val _removeState: MutableLiveData<APIResponse<Unit>> = MutableLiveData()

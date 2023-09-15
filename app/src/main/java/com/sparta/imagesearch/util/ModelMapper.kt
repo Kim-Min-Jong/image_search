@@ -1,10 +1,11 @@
 package com.sparta.imagesearch.util
 
+import com.google.gson.GsonBuilder
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.data.model.clip.ResponseClip
 import com.sparta.imagesearch.data.model.image.ResponseImage
+import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.extension.StringExtension.dateToString
-import java.util.UUID
 
 object ModelMapper {
     fun ResponseClip.toIntegratedModels(): List<IntegratedModel> {
@@ -37,5 +38,13 @@ object ModelMapper {
         }
         return list
     }
-
+    fun MutableCollection<out Any?>?.toIntegratedModel(): List<IntegratedModel> {
+        val list = arrayListOf<IntegratedModel>()
+        for (item in this?.toList()!!) {
+            val gsonData =
+                GsonBuilder().gsonToIntegrateModel(item.toString()) ?: continue
+            list.add(gsonData)
+        }
+        return list
+    }
 }

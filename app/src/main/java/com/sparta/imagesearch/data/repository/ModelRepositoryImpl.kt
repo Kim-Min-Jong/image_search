@@ -56,12 +56,12 @@ class ModelRepositoryImpl(
         return saveDataSource.removeModel(key)
     }
 
-    override suspend fun getAllModels(): APIResponse<MutableCollection<out Any?>> {
+    override suspend fun getAllModels(): APIResponse<List<IntegratedModel>> {
         val response = saveDataSource.getAllModels()
         if (response.isEmpty()) {
             return APIResponse.Error("보관함 목록이 없습니다.")
         }
-        return APIResponse.Success(response)
+        return APIResponse.Success(response.toIntegratedModel())
     }
 
     override suspend fun removeAllModels(): APIResponse<Unit> {

@@ -84,13 +84,7 @@ class SaveFragment : Fragment() {
                     progressbar.isVisible = false
                     noticeTextView.isVisible = false
                     val data = it.data
-                    val formattedData = arrayListOf<IntegratedModel>()
-                    for (item in data?.toList()!!) {
-                        val gsonData =
-                            GsonBuilder().gsonToIntegrateModel(item.toString()) ?: continue
-                        formattedData.add(gsonData)
-                    }
-                    saveAdapter.submitList(formattedData.sortedBy { item -> item.ordering })
+                    saveAdapter.submitList(data?.sortedBy { item -> item.ordering })
                 }
             }
         }
