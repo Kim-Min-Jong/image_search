@@ -22,9 +22,6 @@ class SearchViewModel(
     private val _state: MutableLiveData<APIResponse<List<IntegratedModel>>> = MutableLiveData()
     val state: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _state
-    private val _prefsState: MutableLiveData<APIResponse<IntegratedModel>> = MutableLiveData()
-    val prefsState: LiveData<APIResponse<IntegratedModel>>
-        get() = _prefsState
 
     private var responseClip: ResponseClip? = null
     private var responseImage: ResponseImage? = null
@@ -42,19 +39,20 @@ class SearchViewModel(
     fun clearList() = list.clear()
 
     fun getDatas(token: String, query: String, page: Int, scrollFlag: Int) {
-        // 맨 밑에서 스크롤 시 로딩을 하지 않도록
+        // 맨 밑에서 스크롤 시 로딩을 보여주도록
         if (scrollFlag == SCROLL_DEFAULT) {
             _state.value = APIResponse.Loading(emptyList())
         } else {
             _state.value = APIResponse.Loading()
         }
-        getImages(token, query, page)
-        getClips(token, query, page)
+        getImages(token, query, page, scrollFlag)
+        getClips(token, query, page, scrollFlag)
     }
 
-    private fun getClips(token: String, query: String, page: Int) {
-        // 다음 페이지로 넘기기 위해 이전 값들을 없앰
-        clearList()
+    private fun getClips(token: String, query: String, page: Int, scrollFlag: Int) {
+        // 스크롤 업데이트가 아닐 떄, 없애 주지 않으면 같은 데이터가 한번 더 들어옴
+        if (scrollFlag == SCROLL_DEFAULT)
+            clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getClips(token, query, page)
             responseClip = response.data
@@ -83,9 +81,9 @@ class SearchViewModel(
         }
     }
 
-    private fun getImages(token: String, query: String, page: Int) {
-        // 다음 페이지로 넘기기 위해 이전 값들을 없앰
-        clearList()
+    private fun getImages(token: String, query: String, page: Int, scrollFlag: Int) {
+        if (scrollFlag == SCROLL_DEFAULT)
+            clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getImages(token, query, page)
             responseImage = response.data

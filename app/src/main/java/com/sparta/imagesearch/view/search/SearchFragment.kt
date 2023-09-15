@@ -25,7 +25,7 @@ import com.sparta.imagesearch.util.ConnectWatcher
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.App
-import com.sparta.imagesearch.view.adapter.SearchListAdapter
+import com.sparta.imagesearch.view.adapter.SearchListViewAdapter
 import com.sparta.imagesearch.view.main.MainViewModel
 import com.sparta.imagesearch.view.main.MainViewModelFactory
 
@@ -37,7 +37,7 @@ class SearchFragment : Fragment() {
     private var page = 1
     private var searchText = ""
     private val searchAdapter by lazy {
-        SearchListAdapter(
+        SearchListViewAdapter(
             onStarChecked = { model ->
                 when (model.isLiked) {
                     true -> addModelFromPreference(model)
@@ -102,11 +102,15 @@ class SearchFragment : Fragment() {
 
         searchButton.setOnClickListener {
             settingVirtualKeyboard()
+            page = 1
+            searchAdapter.submitList(emptyList())
             searchText(searchEditText)
         }
 
         searchEditText.setOnEditorActionListener { editText, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                page = 1
+                searchAdapter.submitList(emptyList())
                 searchText(editText)
             }
             true
@@ -183,11 +187,10 @@ class SearchFragment : Fragment() {
 
                 is APIResponse.Success -> {
                     searchRecyclerView.isVisible = true
+                    // 마지막 스크롤일떄마다 늘어나는 거 확인
+                    Log.e("!!!!!size!!!!!!!! ", searchAdapter.currentList.size.toString())
                     it.data?.let { data ->
-                        when (scrollFlag) {
-                            SCROLL_DEFAULT -> searchAdapter.addItems(data)
-                            SCROLL_BOTTOM -> searchAdapter.updateItems(data)
-                        }
+                        searchAdapter.submitList(data)
                     }
                     progressbar.isVisible = false
                     updateProgressbar.isVisible = false
