@@ -191,7 +191,11 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.searchEditText.setText(App.prefs.getSearchKeyword())
+        val keyword = App.prefs.getSearchKeyword()
+        binding.searchEditText.setText(keyword)
+        if (keyword != null) {
+            fetchItems(keyword, page, SCROLL_DEFAULT)
+        }
     }
 
     companion object {
