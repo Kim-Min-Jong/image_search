@@ -55,27 +55,13 @@ class SearchViewModel(
             clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getClips(token, query, page)
-            responseClip = response.data
-            responseClip?.documents?.forEach {
-                if(it?.thumbnail in keyList){
-                    list.add(
-                        IntegratedModel(
-                            it?.thumbnail,
-                            "[Clip] " + it?.title,
-                            it?.datetime!!.dateToString(),
-                            isLiked = true
-                        )
-                    )
+            response.data?.forEach {
+                if(it.thumbnailUrl in keyList){
+                    list.add(it.apply { isLiked = true })
                 } else {
-                    list.add(
-                        IntegratedModel(
-                            it?.thumbnail,
-                            "[Clip] " + it?.title,
-                            it?.datetime!!.dateToString()
-                        )
-                    )
+                    list.add(it)
                 }
-                _isEndClip = responseClip?.meta?.isEnd
+                _isEndClip = response.data.last().isEnd
             }
             _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))
         }
@@ -86,32 +72,14 @@ class SearchViewModel(
             clearList()
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getImages(token, query, page)
-            responseImage = response.data
-            responseImage?.documents?.forEach {
+            response.data?.forEach {
                 if(it.thumbnailUrl in keyList){
-                    list.add(
-                        IntegratedModel(
-                            it.thumbnailUrl,
-                            "[Image] " + it.displaySitename,
-                            it.datetime.dateToString(),
-                            it.height,
-                            it.width,
-                            isLiked = true
-                        )
-                    )
+                    list.add(it.apply { isLiked = true })
                 } else {
-                    list.add(
-                        IntegratedModel(
-                            it.thumbnailUrl,
-                            "[Image] " + it.displaySitename,
-                            it.datetime.dateToString(),
-                            it.height,
-                            it.width
-                        )
-                    )
+                    list.add(it)
                 }
 
-                _isEndImage = responseImage?.meta?.isEnd
+                _isEndImage = response.data.last().isEnd
             }
             _state.postValue(APIResponse.Success(list.sortedByDescending { it.dateTime }))
         }

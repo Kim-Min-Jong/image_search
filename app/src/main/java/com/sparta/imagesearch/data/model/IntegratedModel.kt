@@ -9,7 +9,8 @@ data class IntegratedModel(
     var height: Int = 500,
     var width: Int = 1000,
     var isLiked: Boolean = false,
-    var ordering: Long = 0L
+    var ordering: Long = 0L,
+    var isEnd: Boolean?
 ) {
     companion object {
         val DIFF_CALLBACK = object: DiffUtil.ItemCallback<IntegratedModel>() {

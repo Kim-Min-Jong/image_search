@@ -1,11 +1,11 @@
 package com.sparta.imagesearch.data.repository
 
 import com.sparta.imagesearch.data.model.IntegratedModel
-import com.sparta.imagesearch.data.model.clip.ResponseClip
-import com.sparta.imagesearch.data.model.image.ResponseImage
 import com.sparta.imagesearch.data.repository.datasource.SaveDataSource
 import com.sparta.imagesearch.data.repository.datasource.SearchDataSource
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.util.ModelMapper.toIntegratedModel
+import com.sparta.imagesearch.util.ModelMapper.toIntegratedModels
 
 class ModelRepositoryImpl(
     private val searchDataSource: SearchDataSource,
@@ -15,11 +15,11 @@ class ModelRepositoryImpl(
         token: String,
         query: String?,
         page: Int
-    ): APIResponse<ResponseClip> {
+    ): APIResponse<List<IntegratedModel>> {
         val response = searchDataSource.getClips(token, query, page)
         if (response.isSuccessful) {
             response.body()?.let {
-                return APIResponse.Success(it)
+                return APIResponse.Success(it.toIntegratedModels())
             }
         }
         return APIResponse.Error(response.message())
@@ -29,11 +29,11 @@ class ModelRepositoryImpl(
         token: String,
         query: String?,
         page: Int
-    ): APIResponse<ResponseImage> {
+    ): APIResponse<List<IntegratedModel>> {
         val response = searchDataSource.getImages(token, query, page)
         if (response.isSuccessful) {
             response.body()?.let {
-                return APIResponse.Success(it)
+                return APIResponse.Success(it.toIntegratedModel())
             }
         }
         return APIResponse.Error(response.message())
