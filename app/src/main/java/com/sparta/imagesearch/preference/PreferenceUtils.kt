@@ -2,6 +2,7 @@ package com.sparta.imagesearch.preference
 
 import android.app.Activity
 import android.content.Context
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -23,6 +24,10 @@ class PreferenceUtils(context: Context) {
     }
     fun getSearchKeyword(): String? {
         return searchPrefs.getString(SEARCH_PREFS_NAME, null)
+    }
+    fun removeSearchKeyword() {
+        val editor = searchPrefs.edit()
+        editor.remove(SEARCH_PREFS_NAME).apply()
     }
 
     fun setId(id: Long) {
@@ -68,6 +73,9 @@ class PreferenceUtils(context: Context) {
         prefs.edit().clear().apply()
         orderingPrefs.edit().clear().apply()
     }
+
+
+
     companion object {
         const val MODEL_PREFS_NAME = "prefs"
         const val ORDERING_PREFS_NAME = "ordering"

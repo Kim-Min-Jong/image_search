@@ -36,8 +36,6 @@ class SearchFragment : Fragment() {
         get() = _binding!!
     private var page = 1
     private var searchText = ""
-
-    //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
     private val searchAdapter by lazy {
         SearchListAdapter(
             onStarChecked = { model ->
@@ -113,14 +111,16 @@ class SearchFragment : Fragment() {
             }
             true
         }
+
+        clearButton.setOnClickListener {
+            searchEditText.setText("")
+            App.prefs.removeSearchKeyword()
+        }
     }
 
-    private fun settingVirtualKeyboard() {
-        inputMethodManager.hideSoftInputFromWindow(
-            requireActivity().currentFocus?.windowToken,
-            0
-        )
-    }
+    private fun settingVirtualKeyboard() =
+        inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+
 
     private fun searchText(editText: TextView) = with(binding) {
         // 가상 키보드 설정

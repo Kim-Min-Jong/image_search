@@ -30,6 +30,7 @@ class SearchViewModel(
     private var responseImage: ResponseImage? = null
     private val list = arrayListOf<IntegratedModel>()
 
+    //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
     private var _isEndClip: Boolean? = null
     private var _isEndImage: Boolean? = null
     val isEndClip: Boolean?
@@ -132,14 +133,6 @@ class SearchViewModel(
                 modelRepository.removeModel(it)
             }
         }
-    }
-
-     fun getModelFromPreference(url: String) {
-         _prefsState.value = APIResponse.Loading()
-         viewModelScope.launch(Dispatchers.IO) {
-            val response = modelRepository.getModel(url)
-             result(response, _prefsState)
-         }
     }
 
     private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {
