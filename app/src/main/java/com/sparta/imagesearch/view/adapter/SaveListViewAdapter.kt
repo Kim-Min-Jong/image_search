@@ -2,12 +2,11 @@ package com.sparta.imagesearch.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.data.model.IntegratedModel
-import com.sparta.imagesearch.databinding.ItemSearchBinding
+import com.sparta.imagesearch.databinding.ItemBookmarkBinding
 import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
 
 class SaveListViewAdapter :
@@ -15,7 +14,7 @@ class SaveListViewAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaveViewHolder =
         SaveViewHolder(
-            ItemSearchBinding.inflate(
+            ItemBookmarkBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -27,7 +26,7 @@ class SaveListViewAdapter :
     }
 
     inner class SaveViewHolder(
-        private val binding: ItemSearchBinding,
+        private val binding: ItemBookmarkBinding,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -44,7 +43,6 @@ class SaveListViewAdapter :
 
             titleTextView.text = model.title
             timeTextView.text = model.dateTime?.dateTimeToString()
-            likedCheckBox.isVisible = false
         }
     }
 }
