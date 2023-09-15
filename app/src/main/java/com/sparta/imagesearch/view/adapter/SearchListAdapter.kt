@@ -51,6 +51,7 @@ class SearchListAdapter(
             false -> checkBox.setBackgroundResource(R.drawable.ic_star)
         }
     }
+
     inner class SearchViewHolder(
         private val binding: ItemSearchBinding,
         private val onStarChecked: (IntegratedModel) -> Unit
@@ -71,18 +72,16 @@ class SearchListAdapter(
             titleTextView.text = model.title
             timeTextView.text = model.dateTime?.dateTimeToString()
             isLikedResources(model.isLiked, likedCheckBox)
-            likedCheckBox.run {
-                setOnCheckedChangeListener { _, isChecked ->
-                    isLikedResources(isChecked, this)
-                    if (model.isLiked != isChecked) {
-                        App.prefs.setId(++prefsId)
-                        onStarChecked(
-                            model.copy(
-                                isLiked = isChecked,
-                                ordering = prefsId
-                            )
+            likedCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                isLikedResources(isChecked, likedCheckBox)
+                if (model.isLiked != isChecked) {
+                    App.prefs.setId(++prefsId)
+                    onStarChecked(
+                        model.copy(
+                            isLiked = isChecked,
+                            ordering = prefsId
                         )
-                    }
+                    )
                 }
             }
         }
