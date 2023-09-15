@@ -3,6 +3,7 @@ package com.sparta.imagesearch.view.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.sparta.imagesearch.R
 import com.sparta.imagesearch.databinding.ActivityMainBinding
 import com.sparta.imagesearch.view.search.SearchFragment
@@ -15,6 +16,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
+    }
+    private val mainViewModel by lazy{
+        ViewModelProvider(this, MainViewModelFactory(this))[MainViewModel::class.java]
     }
 
     private fun initViews() = with(binding) {

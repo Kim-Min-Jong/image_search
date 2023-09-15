@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +21,7 @@ import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.key.Key.API_KEY
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.util.ConnectWatcher
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.App
@@ -117,7 +117,27 @@ class SearchFragment : Fragment() {
             App.prefs.removeSearchKeyword()
         }
     }
-
+    private fun initNetworkStatus() = with(binding) {
+        // 네트워크 상태 확인은 다른 프래그먼트를 만들 때, 확인 해야 할 필요가 있으므로 공유하는 뷰모델을 통해 연결
+        ConnectWatcher(requireActivity()).observe(viewLifecycleOwner) { connection ->
+            mainViewModel.setStatus(connection)
+        }
+        mainViewModel.networkStatus.observe(viewLifecycleOwner) { isAvailable ->
+            when(isAvailable) {
+                true -> {
+                    networkNoticeTextView.isVisible = false
+                    searchRecyclerView.isVisible = true
+                    searchButton.isEnabled = true
+                    reSearch()
+                }
+                false -> {
+                    networkNoticeTextView.isVisible = true
+                    searchRecyclerView.isVisible = false
+                    searchButton.isEnabled = false
+                }
+            }
+        }
+    }
     private fun settingVirtualKeyboard() =
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
 
@@ -184,6 +204,14 @@ class SearchFragment : Fragment() {
         searchViewModel.removeModelFromPreference(model)
     }
 
+    private fun reSearch() {
+        val keyword = App.prefs.getSearchKeyword()
+        binding.searchEditText.setText(keyword)
+        if (keyword != null) {
+            fetchItems(keyword, page, SCROLL_DEFAULT)
+        }
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
@@ -191,11 +219,7 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val keyword = App.prefs.getSearchKeyword()
-        binding.searchEditText.setText(keyword)
-        if (keyword != null) {
-            fetchItems(keyword, page, SCROLL_DEFAULT)
-        }
+        initNetworkStatus()
     }
 
     companion object {
