@@ -20,7 +20,7 @@ class SearchListAdapter(
     private var prefsId = App.prefs.getId()
     fun addItems(items: List<IntegratedModel>) {
         _list.clear()
-        _list.addAll(items)
+        _list.addAll(items.toSet())
         notifyDataSetChanged()
     }
 
@@ -28,7 +28,6 @@ class SearchListAdapter(
         _list.addAll(items)
         notifyItemInserted(itemCount - 1)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
         SearchViewHolder(
