@@ -23,9 +23,9 @@ class PreferenceUtils(context: Context) {
             searchPrefs.edit().putString(SEARCH_PREFS_NAME, value).apply()
         }
     var id: Long
-        get() = searchPrefs.getLong(ORDERING_PREFS_NAME, 0L)
+        get() = orderingPrefs.getLong(ORDERING_PREFS_NAME, 0L)
         set(value) {
-            searchPrefs.edit().putLong(ORDERING_PREFS_NAME, value).apply()
+            orderingPrefs.edit().putLong(ORDERING_PREFS_NAME, value).apply()
         }
 
     fun setModel(key: String, value: IntegratedModel?) {

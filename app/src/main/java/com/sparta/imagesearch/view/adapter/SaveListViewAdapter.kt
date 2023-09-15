@@ -3,17 +3,15 @@ package com.sparta.imagesearch.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
 import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
 
-class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
-    private val _list = arrayListOf<IntegratedModel>()
-    val list: List<IntegratedModel>
-        get() = _list
-
+class SaveListViewAdapter :
+    ListAdapter<IntegratedModel, SaveListViewAdapter.SaveViewHolder>(IntegratedModel.DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaveViewHolder =
         SaveViewHolder(
@@ -25,22 +23,7 @@ class SaveListAdapter : RecyclerView.Adapter<SaveListAdapter.SaveViewHolder>() {
         )
 
     override fun onBindViewHolder(holder: SaveViewHolder, position: Int) {
-        holder.bind(_list[position])
-    }
-
-    override fun getItemCount(): Int = _list.size
-
-    fun addItems(items: List<IntegratedModel>?) {
-        if(items == null) {
-            return
-        }
-        _list.clear()
-        _list.addAll(items)
-        notifyDataSetChanged()
-    }
-    fun clearItems() {
-        _list.clear()
-        notifyDataSetChanged()
+        holder.bind(getItem(position))
     }
 
     inner class SaveViewHolder(

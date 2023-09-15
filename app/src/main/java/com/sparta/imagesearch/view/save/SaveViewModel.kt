@@ -32,7 +32,6 @@ class SaveViewModel(
     }
     fun saveClear() {
         viewModelScope.launch(Dispatchers.IO) {
-            App.prefs.clear()
             val response = modelRepository.removeAllModels()
             result(response, _removeState)
         }

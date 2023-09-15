@@ -15,7 +15,7 @@ import com.sparta.imagesearch.databinding.FragmentSaveBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.util.APIResponse
-import com.sparta.imagesearch.view.adapter.SaveListAdapter
+import com.sparta.imagesearch.view.adapter.SaveListViewAdapter
 import com.sparta.imagesearch.view.main.MainViewModel
 import com.sparta.imagesearch.view.main.MainViewModelFactory
 
@@ -24,7 +24,7 @@ class SaveFragment : Fragment() {
     private val binding: FragmentSaveBinding
         get() = _binding!!
     private val saveAdapter by lazy {
-        SaveListAdapter()
+        SaveListViewAdapter()
     }
     private val saveViewModel by lazy {
         ViewModelProvider(
@@ -90,7 +90,7 @@ class SaveFragment : Fragment() {
                             GsonBuilder().gsonToIntegrateModel(item.toString()) ?: continue
                         formattedData.add(gsonData)
                     }
-                    saveAdapter.addItems(formattedData.sortedBy { item -> item.ordering })
+                    saveAdapter.submitList(formattedData.sortedBy { item -> item.ordering })
                 }
             }
         }
@@ -108,7 +108,7 @@ class SaveFragment : Fragment() {
 
                 is APIResponse.Loading -> {}
                 is APIResponse.Success -> {
-                    saveAdapter.clearItems()
+                    saveAdapter.submitList(emptyList())
                     saveRecyclerView.isVisible = false
                     noticeTextView.isVisible = true
                     noticeTextView.text = "보관함 목록이 없습니다."
