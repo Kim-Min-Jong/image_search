@@ -6,18 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.gson.GsonBuilder
-import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSaveBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
-import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.view.adapter.SaveListViewAdapter
-import com.sparta.imagesearch.view.main.MainViewModel
-import com.sparta.imagesearch.view.main.MainViewModelFactory
 
 class SaveFragment : Fragment() {
     private var _binding: FragmentSaveBinding? = null
@@ -32,11 +26,7 @@ class SaveFragment : Fragment() {
             SaveViewModelFactory(requireActivity())
         )[SaveViewModel::class.java]
     }
-//    private val mainViewModel: MainViewModel by activityViewModels {
-//        MainViewModelFactory(
-//            requireActivity()
-//        )
-//    }
+//    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

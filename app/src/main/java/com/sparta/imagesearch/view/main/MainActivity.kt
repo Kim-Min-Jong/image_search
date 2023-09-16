@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         initViews()
     }
     private val mainViewModel by lazy{
-        ViewModelProvider(this, MainViewModelFactory(this))[MainViewModel::class.java]
+        ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private fun initViews() = with(binding) {

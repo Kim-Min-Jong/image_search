@@ -27,7 +27,6 @@ import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
 import com.sparta.imagesearch.view.App
 import com.sparta.imagesearch.view.adapter.SearchListViewAdapter
 import com.sparta.imagesearch.view.main.MainViewModel
-import com.sparta.imagesearch.view.main.MainViewModelFactory
 
 
 class SearchFragment : Fragment() {
@@ -54,11 +53,7 @@ class SearchFragment : Fragment() {
         )[SearchViewModel::class.java]
     }
 
-    private val mainViewModel: MainViewModel by activityViewModels {
-        MainViewModelFactory(
-            requireActivity()
-        )
-    }
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
