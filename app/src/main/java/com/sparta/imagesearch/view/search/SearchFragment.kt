@@ -16,10 +16,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.sparta.imagesearch.BuildConfig
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
-import com.sparta.imagesearch.key.Key.API_KEY
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ConnectWatcher
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
@@ -221,7 +221,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val AUTHORIZATION = "KakaoAK $API_KEY"
+        const val AUTHORIZATION = "KakaoAK ${BuildConfig.KAKAO_API_KEY}"
         const val TAG = "SEARCH_FRAGMENT"
         fun newInstance() = SearchFragment()
     }
