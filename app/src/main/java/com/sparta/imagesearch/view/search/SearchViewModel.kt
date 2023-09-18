@@ -23,8 +23,6 @@ class SearchViewModel(
     val state: LiveData<APIResponse<List<IntegratedModel>>>
         get() = _state
 
-    private var responseClip: ResponseClip? = null
-    private var responseImage: ResponseImage? = null
     private val list = arrayListOf<IntegratedModel>()
 
     //현재 페이지가 마지막 페이지인지 여부, 값이 false면 page를 증가시켜 다음 페이지를 요청할 수 있음
@@ -98,18 +96,6 @@ class SearchViewModel(
             model.thumbnailUrl?.let {
                 modelRepository.removeModel(it)
             }
-        }
-    }
-
-    private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {
-        try {
-            if (response.data != null) {
-                livedata.postValue(response)
-            } else {
-                livedata.postValue(APIResponse.Error(response.message.toString()))
-            }
-        } catch (e: Exception) {
-            livedata.postValue(APIResponse.Error(e.message.toString()))
         }
     }
 }

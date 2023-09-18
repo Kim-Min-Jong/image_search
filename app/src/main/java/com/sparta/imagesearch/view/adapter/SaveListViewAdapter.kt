@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemBookmarkBinding
-import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
+import com.sparta.imagesearch.extension.DateExtension.dateToString
 
 class SaveListViewAdapter :
     ListAdapter<IntegratedModel, SaveListViewAdapter.SaveViewHolder>(IntegratedModel.DIFF_CALLBACK) {
@@ -42,7 +42,7 @@ class SaveListViewAdapter :
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
-            timeTextView.text = model.dateTime?.dateTimeToString()
+            timeTextView.text = model.dateTime?.dateToString()
         }
     }
 }

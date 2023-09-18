@@ -6,6 +6,7 @@ import com.sparta.imagesearch.data.model.clip.ResponseClip
 import com.sparta.imagesearch.data.model.image.ResponseImage
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 import com.sparta.imagesearch.extension.StringExtension.dateToString
+import com.sparta.imagesearch.extension.StringExtension.stringToDate
 
 object ModelMapper {
     fun ResponseClip.toIntegratedModels(): List<IntegratedModel> {
@@ -15,7 +16,7 @@ object ModelMapper {
                 IntegratedModel(
                     it?.thumbnail,
                     "[Clip] " + it?.title,
-                    it?.datetime!!.dateToString(),
+                    it?.datetime!!.dateToString().stringToDate(),
                     isEnd = this.meta?.isEnd
                 )
             )
@@ -29,7 +30,7 @@ object ModelMapper {
                 IntegratedModel(
                     it.thumbnailUrl,
                     "[Image] " + it.displaySitename,
-                    it.datetime.dateToString(),
+                    it.datetime.dateToString().stringToDate(),
                     it.height,
                     it.width,
                     isEnd = this.meta.isEnd

@@ -1,20 +1,18 @@
 package com.sparta.imagesearch.extension
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object StringExtension {
     fun String.dateToString() :String
             = this.split(".").first()
 
-    fun String.dateTimeToString(): String
+    private fun String.dateTimeToString(): String
             = this.split("T").joinToString(" ")
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun String.stringToDateTime(): LocalDateTime =
-        LocalDateTime.parse(this)
-
-
+    fun String.stringToDate(): Date? {
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREAN)
+        return sdf.parse(this.dateTimeToString())
+    }
 }

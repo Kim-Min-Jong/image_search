@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemSearchBinding
-import com.sparta.imagesearch.extension.StringExtension.dateTimeToString
+import com.sparta.imagesearch.extension.DateExtension.dateToString
 import com.sparta.imagesearch.view.App
 
 class SearchListViewAdapter(
@@ -57,7 +57,7 @@ class SearchListViewAdapter(
                 .into(thumbnailImageView)
 
             titleTextView.text = model.title
-            timeTextView.text = model.dateTime?.dateTimeToString()
+            timeTextView.text = model.dateTime?.dateToString()
             isLikedResources(model.isLiked, likedCheckBox)
             likedCheckBox.setOnCheckedChangeListener { _, isChecked ->
                 isLikedResources(isChecked, likedCheckBox)
