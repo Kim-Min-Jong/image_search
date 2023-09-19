@@ -33,18 +33,6 @@ class SaveListViewAdapter :
         fun bind(model: IntegratedModel) = with(binding) {
             saveModel = model
             executePendingBindings()
-            val dimensionRatio = model.width / model.height.toFloat()
-            val targetWidth = binding.root.resources.displayMetrics.widthPixels -
-                    (binding.root.paddingStart + binding.root.paddingEnd)
-            val targetHeight = (targetWidth * dimensionRatio).toInt()
-            Glide.with(root)
-                .load(model.thumbnailUrl)
-                .override(model.width, targetHeight)
-                .fitCenter()
-                .into(thumbnailImageView)
-
-            titleTextView.text = model.title
-            timeTextView.text = model.dateTime?.dateToString()
         }
     }
 }
