@@ -23,11 +23,17 @@ class SaveViewModel(
     val removeState: LiveData<APIResponse<Unit>>
         get() = _removeState
 
+    private val list = arrayListOf<IntegratedModel>()
+    val bindingList: List<IntegratedModel>
+        get() = list
 
     fun getAllModels() {
         _modelState.value = APIResponse.Loading()
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getAllModels()
+            response.data?.forEach {
+                list.add(it)
+            }
             result(response, _modelState)
         }
     }

@@ -12,6 +12,7 @@ import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.extension.DateExtension.dateToString
 import com.sparta.imagesearch.view.App
+import com.sparta.imagesearch.view.adapter.SaveListViewAdapter
 import com.sparta.imagesearch.view.adapter.SearchListViewAdapter
 import com.sparta.imagesearch.view.search.SearchFragment
 import com.sparta.imagesearch.view.search.SearchViewModel
@@ -69,6 +70,13 @@ object BindingAdapter {
     @JvmStatic
     fun setData(recyclerView: RecyclerView, items: List<IntegratedModel>?) {
         val listAdapter = recyclerView.adapter as SearchListViewAdapter
+        listAdapter.submitList(items?.toMutableList())
+    }
+
+    @BindingAdapter("app:markedItems")
+    @JvmStatic
+    fun setMarkedData(recyclerView: RecyclerView, items: List<IntegratedModel>?) {
+        val listAdapter = recyclerView.adapter as SaveListViewAdapter
         listAdapter.submitList(items?.toMutableList())
     }
 

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.sparta.imagesearch.R
 import com.sparta.imagesearch.databinding.FragmentSaveBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.util.APIResponse
@@ -31,7 +33,7 @@ class SaveFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSaveBinding.inflate(layoutInflater)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_save, container, false)
         return binding.root
     }
 
@@ -41,6 +43,8 @@ class SaveFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
+        lifecycleOwner = viewLifecycleOwner
+        viewModel = saveViewModel
         saveRecyclerView.run {
             adapter = saveAdapter
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)

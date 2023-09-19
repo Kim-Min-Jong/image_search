@@ -31,6 +31,8 @@ class SaveListViewAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: IntegratedModel) = with(binding) {
+            saveModel = model
+            executePendingBindings()
             val dimensionRatio = model.width / model.height.toFloat()
             val targetWidth = binding.root.resources.displayMetrics.widthPixels -
                     (binding.root.paddingStart + binding.root.paddingEnd)
