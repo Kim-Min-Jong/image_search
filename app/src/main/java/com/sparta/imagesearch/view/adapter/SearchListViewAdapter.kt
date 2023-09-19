@@ -32,13 +32,9 @@ class SearchListViewAdapter(
         holder.bind(getItem(position))
     }
 
-    private fun isLikedResources(isLiked: Boolean, checkBox: CheckBox) {
-        when (isLiked) {
-            true -> checkBox.setBackgroundResource(R.drawable.ic_star_favorite)
-            false -> checkBox.setBackgroundResource(R.drawable.ic_star)
-        }
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
-
     inner class SearchViewHolder(
         private val binding: ItemSearchBinding,
         private val onStarChecked: (IntegratedModel) -> Unit
@@ -46,31 +42,8 @@ class SearchListViewAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: IntegratedModel) = with(binding) {
-            val dimensionRatio = model.width / model.height.toFloat()
-            val targetWidth = binding.root.resources.displayMetrics.widthPixels -
-                    (binding.root.paddingStart + binding.root.paddingEnd)
-            val targetHeight = (targetWidth * dimensionRatio).toInt()
-            Glide.with(root)
-                .load(model.thumbnailUrl)
-                .override(model.width, targetHeight)
-                .fitCenter()
-                .into(thumbnailImageView)
-
-            titleTextView.text = model.title
-            timeTextView.text = model.dateTime?.dateToString()
-            isLikedResources(model.isLiked, likedCheckBox)
-            likedCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                isLikedResources(isChecked, likedCheckBox)
-                if (model.isLiked != isChecked) {
-                    App.prefs.id = ++prefsId
-                    onStarChecked(
-                        model.copy(
-                            isLiked = isChecked,
-                            ordering = prefsId
-                        )
-                    )
-                }
-            }
+            searchModel = model
+            executePendingBindings()
         }
     }
 }

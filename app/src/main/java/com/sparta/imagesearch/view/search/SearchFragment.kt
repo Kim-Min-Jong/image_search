@@ -12,15 +12,18 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.sparta.imagesearch.BuildConfig
+import com.sparta.imagesearch.R
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.util.APIResponse
+import com.sparta.imagesearch.util.BindingAdapter
 import com.sparta.imagesearch.util.ConnectWatcher
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
@@ -84,11 +87,13 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(layoutInflater)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         return binding.root
     }
 
     private fun initViews() = with(binding) {
+        lifecycleOwner = viewLifecycleOwner
+        viewModel = searchViewModel
         searchRecyclerView.run {
             adapter = searchAdapter
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -161,6 +166,7 @@ class SearchFragment : Fragment() {
         searchViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is APIResponse.Error -> {
+                    println("error")
                     searchRecyclerView.isVisible = false
                     progressbar.isVisible = false
                     updateProgressbar.isVisible = false
@@ -170,6 +176,7 @@ class SearchFragment : Fragment() {
 
                 is APIResponse.Loading -> {
                     if (it.data == null) {
+                        println("loading1")
                         progressbar.isVisible = false
                         updateProgressbar.isVisible = true
                         searchRecyclerView.isVisible = true
