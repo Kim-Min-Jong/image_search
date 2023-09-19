@@ -40,13 +40,13 @@ object BindingAdapter {
         textView.text = str
     }
 
-    @BindingAdapter("app:searchModel")
+    @BindingAdapter("app:isChecked")
     @JvmStatic
     fun isCheckedItem(
         checkBox: CheckBox,
         model: IntegratedModel,
     ) {
-        isLikedResources(checkBox.isChecked, checkBox)
+        isLikedResources(model.isLiked, checkBox)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             isLikedResources(isChecked, checkBox)
             ++App.prefs.id
