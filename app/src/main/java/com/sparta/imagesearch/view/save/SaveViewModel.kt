@@ -49,5 +49,11 @@ class SaveViewModel(
         }
     }
 
-
+    fun removeModel(model: IntegratedModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            modelRepository.removeModel(model.thumbnailUrl ?: return@launch)
+            val reload = modelRepository.getAllModels()
+            result(reload, _modelState)
+        }
+    }
 }

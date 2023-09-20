@@ -1,5 +1,6 @@
 package com.sparta.imagesearch.view.save
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSaveBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.util.APIResponse
@@ -18,8 +20,22 @@ class SaveFragment : Fragment() {
     private val binding: FragmentSaveBinding
         get() = _binding!!
     private val saveAdapter by lazy {
-        SaveListViewAdapter()
+        SaveListViewAdapter { model ->
+            runDeleteDialog(model)
+        }
     }
+
+    private fun runDeleteDialog(model: IntegratedModel) {
+        AlertDialog.Builder(requireActivity())
+            .setMessage("삭제하시겠습니까?")
+            .setPositiveButton("예") { _, _ ->
+                saveViewModel.removeModel(model)
+            }.setNegativeButton("아니오") { _, _ ->}
+            .setCancelable(false)
+            .create()
+            .show()
+    }
+
     private val saveViewModel by lazy {
         ViewModelProvider(
             this,

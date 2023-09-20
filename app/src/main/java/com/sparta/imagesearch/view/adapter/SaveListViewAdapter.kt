@@ -9,7 +9,9 @@ import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemBookmarkBinding
 import com.sparta.imagesearch.extension.DateExtension.dateToString
 
-class SaveListViewAdapter :
+class SaveListViewAdapter(
+    private val onLongClicked: (IntegratedModel) -> Unit
+) :
     ListAdapter<IntegratedModel, SaveListViewAdapter.SaveViewHolder>(IntegratedModel.DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SaveViewHolder =
@@ -18,7 +20,8 @@ class SaveListViewAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onLongClicked
         )
 
     override fun onBindViewHolder(holder: SaveViewHolder, position: Int) {
@@ -27,8 +30,18 @@ class SaveListViewAdapter :
 
     inner class SaveViewHolder(
         private val binding: ItemBookmarkBinding,
+        private val onLongClicked: (IntegratedModel) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnLongClickListener {
+                onLongClicked(
+                    currentList[adapterPosition]
+                )
+                false
+            }
+        }
 
         fun bind(model: IntegratedModel) = with(binding) {
             val dimensionRatio = model.width / model.height.toFloat()
