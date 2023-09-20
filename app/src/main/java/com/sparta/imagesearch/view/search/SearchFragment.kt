@@ -23,7 +23,6 @@ import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.FragmentSearchBinding
 import com.sparta.imagesearch.extension.ContextExtension.toast
 import com.sparta.imagesearch.util.APIResponse
-import com.sparta.imagesearch.util.BindingAdapter
 import com.sparta.imagesearch.util.ConnectWatcher
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_BOTTOM
 import com.sparta.imagesearch.util.ScrollConstant.SCROLL_DEFAULT
@@ -166,7 +165,6 @@ class SearchFragment : Fragment() {
         searchViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is APIResponse.Error -> {
-                    println("error")
                     searchRecyclerView.isVisible = false
                     progressbar.isVisible = false
                     updateProgressbar.isVisible = false
@@ -176,7 +174,6 @@ class SearchFragment : Fragment() {
 
                 is APIResponse.Loading -> {
                     if (it.data == null) {
-                        println("loading1")
                         progressbar.isVisible = false
                         updateProgressbar.isVisible = true
                         searchRecyclerView.isVisible = true

@@ -5,7 +5,6 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sparta.imagesearch.R
@@ -14,8 +13,6 @@ import com.sparta.imagesearch.extension.DateExtension.dateToString
 import com.sparta.imagesearch.view.App
 import com.sparta.imagesearch.view.adapter.SaveListViewAdapter
 import com.sparta.imagesearch.view.adapter.SearchListViewAdapter
-import com.sparta.imagesearch.view.search.SearchFragment
-import com.sparta.imagesearch.view.search.SearchViewModel
 import java.util.Date
 
 object BindingAdapter {
@@ -49,7 +46,6 @@ object BindingAdapter {
         isLikedResources(model.isLiked, checkBox)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             isLikedResources(isChecked, checkBox)
-            ++App.prefs.id
             val inputModel = model.copy(
                 isLiked = isChecked,
                 ordering = ++App.prefs.id
