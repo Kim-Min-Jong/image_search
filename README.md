@@ -3,7 +3,10 @@
 
 [과제 정리](https://aaapple.tistory.com/99#article-1--%EA%B0%9C%EC%9D%B8-%EA%B3%BC%EC%A0%9C-%EC%A0%95%EB%A6%AC)  
 [시연 영상1](https://tv.kakao.com/v/441172788)  
-[시연 영상2](https://tv.kakao.com/v/441173583)  
+[시연 영상2](https://tv.kakao.com/v/441173583)    
+[시연 영상3](https://tv.kakao.com/v/441201488)    
+시연 영상 2,3은 마지막에 추가된 보관함 개별 삭제 기능입니다.  
+
 
 ## 1.  과제 개요
 
