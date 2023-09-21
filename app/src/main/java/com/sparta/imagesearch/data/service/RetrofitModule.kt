@@ -7,6 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+// Retrofit을 통해 인터넷 연결하게 해주는 모듈 (구현체)
 object RetrofitModule {
     private fun buildOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()

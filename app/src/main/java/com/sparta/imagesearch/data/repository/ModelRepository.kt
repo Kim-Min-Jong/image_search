@@ -1,10 +1,9 @@
 package com.sparta.imagesearch.data.repository
 
 import com.sparta.imagesearch.data.model.IntegratedModel
-import com.sparta.imagesearch.data.model.clip.ResponseClip
-import com.sparta.imagesearch.data.model.image.ResponseImage
 import com.sparta.imagesearch.util.APIResponse
 
+// ViewModel에 데이터를 전달하는 Repositroy 추상화
 interface ModelRepository {
     // Retrofit API
     suspend fun getClips(token: String, query: String?, page: Int): APIResponse<List<IntegratedModel>>

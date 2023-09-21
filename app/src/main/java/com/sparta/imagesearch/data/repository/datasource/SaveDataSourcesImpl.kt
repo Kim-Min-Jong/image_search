@@ -3,6 +3,7 @@ package com.sparta.imagesearch.data.repository.datasource
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.preference.PreferenceUtils
 
+// Repository 패턴의 저장 DataSource 구현체 - SharedPreference 데이터만 주고 받음
 class SaveDataSourcesImpl(
     private val prefsUtils: PreferenceUtils
 ): SaveDataSource {

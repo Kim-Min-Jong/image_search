@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// 날짜 출력 포맷 변환 확장함수
 object DateExtension {
 
     fun Date.dateToString(): String {

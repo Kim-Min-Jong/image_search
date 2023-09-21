@@ -9,6 +9,7 @@ import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.databinding.ItemBookmarkBinding
 import com.sparta.imagesearch.extension.DateExtension.dateToString
 
+// 보관함 리사이클러뷰 어댑터 (ListAdapter - DiffUtil 사용)
 class SaveListViewAdapter(
     private val onLongClicked: (IntegratedModel) -> Unit
 ) :

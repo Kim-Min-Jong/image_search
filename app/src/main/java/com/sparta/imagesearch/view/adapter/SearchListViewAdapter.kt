@@ -12,6 +12,7 @@ import com.sparta.imagesearch.databinding.ItemSearchBinding
 import com.sparta.imagesearch.extension.DateExtension.dateToString
 import com.sparta.imagesearch.view.App
 
+// 검색창 리사이클러뷰 어댑터 (ListAdapter - DiffUtil 사용)
 class SearchListViewAdapter(
     private val onStarChecked: (IntegratedModel) -> Unit
 ) : ListAdapter<IntegratedModel, SearchListViewAdapter.SearchViewHolder>(IntegratedModel.DIFF_CALLBACK) {

@@ -55,17 +55,21 @@ class SearchFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    // 가상키보드 세팅을 위한 InputManager 변수
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
+    // 최하단일 때, 다음 페이지를 불러올 OnScrollListener
     private val endScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                // 스크롤이 움직이고 최하단일 떄
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                     && !binding.searchRecyclerView.canScrollVertically(1)
                 ) {
+                    // 아직 가져올 페이지가 남아있을떄
                     if (searchViewModel.isEndClip == false && searchViewModel.isEndImage == false) {
                         page++
                         fetchItems(binding.searchEditText.text.toString(), page, SCROLL_BOTTOM)
@@ -88,6 +92,7 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
+    // 각종 뷰 초기화
     private fun initViews() = with(binding) {
         searchRecyclerView.run {
             adapter = searchAdapter
@@ -116,6 +121,8 @@ class SearchFragment : Fragment() {
             App.prefs.removeSearchKeyword()
         }
     }
+
+    // 네트워크 상태를 observing하면서 상태에 따른 UI 분기
     private fun initNetworkStatus() = with(binding) {
         // 네트워크 상태 확인은 다른 프래그먼트를 만들 때, 확인 해야 할 필요가 있으므로 공유하는 뷰모델을 통해 연결
         ConnectWatcher(requireActivity()).observe(viewLifecycleOwner) { connection ->
@@ -137,10 +144,13 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
+    // 가상키보드 사라지게 하는 함수
     private fun settingVirtualKeyboard() =
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
 
 
+    // 검색어를 입력받고 데이터를 가져올 떄 사용되는 함수
     private fun searchText(editText: TextView) = with(binding) {
         // 가상 키보드 설정
         if (editText.text.isEmpty()) {
@@ -156,6 +166,7 @@ class SearchFragment : Fragment() {
         fetchItems(editText.text.toString(), page, SCROLL_DEFAULT)
     }
 
+    // viewModel을 통해 Kakao API에서 값을 가져오고 observing을 하여 상태에 따라 UI를 분기 시키는 함수
     private fun fetchItems(query: String, page: Int, scrollFlag: Int) = with(binding) {
         searchViewModel.getDatas(AUTHORIZATION, query, page, scrollFlag)
         searchViewModel.state.observe(viewLifecycleOwner) {
@@ -194,14 +205,17 @@ class SearchFragment : Fragment() {
         }
     }
 
+    // 별표 눌렀을 때 sharedPreference에 저장하는 함수
     private fun addModelFromPreference(model: IntegratedModel) {
         searchViewModel.addModelFromPreference(model)
     }
 
+    // 별표 눌렀을 때 sharedPreference에서 삭제하는 함수
     private fun removeModelFromPreference(model: IntegratedModel) {
         searchViewModel.removeModelFromPreference(model)
     }
 
+    // resume되거나, 다른 탭을 갔다오거나 등 다시 검색화면으로 돌아왔을 때 자동으로 검색이 가능하게 만드는 함수
     private fun reSearch() {
         val keyword = App.prefs.keyword
         binding.searchEditText.setText(keyword)

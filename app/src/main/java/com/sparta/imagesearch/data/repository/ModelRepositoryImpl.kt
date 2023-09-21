@@ -6,6 +6,8 @@ import com.sparta.imagesearch.data.repository.datasource.SearchDataSource
 import com.sparta.imagesearch.util.APIResponse
 import com.sparta.imagesearch.util.ModelMapper.toIntegratedModelList
 
+// ViewModel에 데이터를 전달하는 Repositroy 구현체 - ViewModel은 여기서 받는 데이터의 출처를 몰라도 됨
+// 그저 이용만 하기 때문에, Data 와 비즈니스 로직이 분리 됨
 class ModelRepositoryImpl(
     private val searchDataSource: SearchDataSource,
     private val saveDataSource: SaveDataSource

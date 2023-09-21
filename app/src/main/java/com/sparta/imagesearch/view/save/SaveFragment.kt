@@ -25,17 +25,6 @@ class SaveFragment : Fragment() {
         }
     }
 
-    private fun runDeleteDialog(model: IntegratedModel) {
-        AlertDialog.Builder(requireActivity())
-            .setMessage("삭제하시겠습니까?")
-            .setPositiveButton("예") { _, _ ->
-                saveViewModel.removeModel(model)
-            }.setNegativeButton("아니오") { _, _ ->}
-            .setCancelable(false)
-            .create()
-            .show()
-    }
-
     private val saveViewModel by lazy {
         ViewModelProvider(
             this,
@@ -56,6 +45,7 @@ class SaveFragment : Fragment() {
         initViews()
     }
 
+    // 리사이클러뷰 및 fab 초기화
     private fun initViews() = with(binding) {
         saveRecyclerView.run {
             adapter = saveAdapter
@@ -67,6 +57,7 @@ class SaveFragment : Fragment() {
         fetchItems()
     }
 
+    // viewModel에서 sharedPrefence값을 가져오고 값을 observing
     private fun fetchItems() = with(binding) {
         saveViewModel.getAllModels()
         saveViewModel.modelState.observe(viewLifecycleOwner) {
@@ -96,6 +87,7 @@ class SaveFragment : Fragment() {
 
     }
 
+    // 보관함 전체삭제
     private fun removeItems() = with(binding) {
         saveViewModel.saveClear()
         saveViewModel.removeState.observe(viewLifecycleOwner) {
@@ -115,6 +107,18 @@ class SaveFragment : Fragment() {
             }
         }
 
+    }
+
+    // 개별 항목 삭제 다이얼로그
+    private fun runDeleteDialog(model: IntegratedModel) {
+        AlertDialog.Builder(requireActivity())
+            .setMessage("삭제하시겠습니까?")
+            .setPositiveButton("예") { _, _ ->
+                saveViewModel.removeModel(model)
+            }.setNegativeButton("아니오") { _, _ ->}
+            .setCancelable(false)
+            .create()
+            .show()
     }
 
     override fun onDestroyView() {

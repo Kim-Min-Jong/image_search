@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
+// Retrofit Service를 연결하는 인터페이스
 interface KaKaoSearchService {
     @GET("image")
     suspend fun getImages(

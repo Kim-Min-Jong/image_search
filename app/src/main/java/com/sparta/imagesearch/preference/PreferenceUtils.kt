@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder
 import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.extension.GsonExtension.gsonToIntegrateModel
 
+// 보관함 모델, 마지막 검색어, 보관함 저장 순서를 저장하기 위한 SharedPreference Util 클래스
 class PreferenceUtils(context: Context) {
     private val prefName = MODEL_PREFS_NAME
     private val orderingPrefsName = ORDERING_PREFS_NAME

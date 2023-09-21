@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import androidx.lifecycle.LiveData
 
+// 실시간 인터넷 감지를 위한 클래스
 class ConnectWatcher(
     context: Context
 ) : LiveData<Boolean>() {
