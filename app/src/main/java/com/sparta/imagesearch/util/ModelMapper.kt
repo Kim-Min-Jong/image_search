@@ -9,7 +9,7 @@ import com.sparta.imagesearch.extension.StringExtension.dateToString
 import com.sparta.imagesearch.extension.StringExtension.stringToDate
 
 object ModelMapper {
-    fun ResponseClip.toIntegratedModels(): List<IntegratedModel> {
+    fun ResponseClip.toIntegratedModelList(): List<IntegratedModel> {
         val list = arrayListOf<IntegratedModel>()
         this.documents?.forEach {
             list.add(
@@ -23,7 +23,7 @@ object ModelMapper {
         }
         return list
     }
-    fun ResponseImage.toIntegratedModel(): List<IntegratedModel>  {
+    fun ResponseImage.toIntegratedModelList(): List<IntegratedModel>  {
         val list = arrayListOf<IntegratedModel>()
         this.documents.forEach {
             list.add(
@@ -39,7 +39,7 @@ object ModelMapper {
         }
         return list
     }
-    fun MutableCollection<out Any?>?.toIntegratedModel(): List<IntegratedModel> {
+    fun MutableCollection<out Any?>?.toIntegratedModelList(): List<IntegratedModel> {
         val list = arrayListOf<IntegratedModel>()
         for (item in this?.toList()!!) {
             val gsonData =

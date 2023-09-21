@@ -15,8 +15,6 @@ import com.sparta.imagesearch.view.App
 class SearchListViewAdapter(
     private val onStarChecked: (IntegratedModel) -> Unit
 ) : ListAdapter<IntegratedModel, SearchListViewAdapter.SearchViewHolder>(IntegratedModel.DIFF_CALLBACK) {
-    // 보관함 저장 순서를 담는 값
-    private var prefsId = App.prefs.id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
         SearchViewHolder(
@@ -62,11 +60,10 @@ class SearchListViewAdapter(
             likedCheckBox.setOnCheckedChangeListener { _, isChecked ->
                 isLikedResources(isChecked, likedCheckBox)
                 if (model.isLiked != isChecked) {
-                    App.prefs.id = ++prefsId
                     onStarChecked(
                         model.copy(
                             isLiked = isChecked,
-                            ordering = prefsId
+                            ordering = ++App.prefs.orderingId
                         )
                     )
                 }

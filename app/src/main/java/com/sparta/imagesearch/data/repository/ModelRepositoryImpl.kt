@@ -4,8 +4,7 @@ import com.sparta.imagesearch.data.model.IntegratedModel
 import com.sparta.imagesearch.data.repository.datasource.SaveDataSource
 import com.sparta.imagesearch.data.repository.datasource.SearchDataSource
 import com.sparta.imagesearch.util.APIResponse
-import com.sparta.imagesearch.util.ModelMapper.toIntegratedModel
-import com.sparta.imagesearch.util.ModelMapper.toIntegratedModels
+import com.sparta.imagesearch.util.ModelMapper.toIntegratedModelList
 
 class ModelRepositoryImpl(
     private val searchDataSource: SearchDataSource,
@@ -19,7 +18,7 @@ class ModelRepositoryImpl(
         val response = searchDataSource.getClips(token, query, page)
         if (response.isSuccessful) {
             response.body()?.let {
-                return APIResponse.Success(it.toIntegratedModels())
+                return APIResponse.Success(it.toIntegratedModelList())
             }
         }
         return APIResponse.Error(response.message())
@@ -33,7 +32,7 @@ class ModelRepositoryImpl(
         val response = searchDataSource.getImages(token, query, page)
         if (response.isSuccessful) {
             response.body()?.let {
-                return APIResponse.Success(it.toIntegratedModel())
+                return APIResponse.Success(it.toIntegratedModelList())
             }
         }
         return APIResponse.Error(response.message())
@@ -61,7 +60,7 @@ class ModelRepositoryImpl(
         if (response.isEmpty()) {
             return APIResponse.Error("보관함 목록이 없습니다.")
         }
-        return APIResponse.Success(response.toIntegratedModel())
+        return APIResponse.Success(response.toIntegratedModelList())
     }
 
     override suspend fun removeAllModels(): APIResponse<Unit> {

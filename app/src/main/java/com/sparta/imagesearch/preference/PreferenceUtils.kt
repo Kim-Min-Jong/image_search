@@ -22,7 +22,7 @@ class PreferenceUtils(context: Context) {
         set(value) {
             searchPrefs.edit().putString(SEARCH_PREFS_NAME, value).apply()
         }
-    var id: Long
+    var orderingId: Long
         get() = orderingPrefs.getLong(ORDERING_PREFS_NAME, 0L)
         set(value) {
             orderingPrefs.edit().putLong(ORDERING_PREFS_NAME, value).apply()
