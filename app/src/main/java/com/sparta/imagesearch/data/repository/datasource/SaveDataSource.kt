@@ -8,5 +8,5 @@ interface SaveDataSource {
     suspend fun setModel(key: String, value: IntegratedModel)
     suspend fun removeModel(key: String)
     suspend fun getAllModels() : MutableCollection<out Any?>
-    suspend fun removeAllModel()
+    suspend fun removeAllModels()
 }

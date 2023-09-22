@@ -101,7 +101,7 @@ class SearchFragment : Fragment() {
         }
 
         searchButton.setOnClickListener {
-            settingVirtualKeyboard()
+            hideVirtualKeyboard()
             page = 1
             searchAdapter.submitList(emptyList())
             searchText(searchEditText)
@@ -126,7 +126,7 @@ class SearchFragment : Fragment() {
     private fun initNetworkStatus() = with(binding) {
         // 네트워크 상태 확인은 다른 프래그먼트를 만들 때, 확인 해야 할 필요가 있으므로 공유하는 뷰모델을 통해 연결
         ConnectWatcher(requireActivity()).observe(viewLifecycleOwner) { connection ->
-            mainViewModel.setStatus(connection)
+            mainViewModel.setNetworkStatus(connection)
         }
         mainViewModel.networkStatus.observe(viewLifecycleOwner) { isAvailable ->
             when(isAvailable) {
@@ -146,7 +146,7 @@ class SearchFragment : Fragment() {
     }
 
     // 가상키보드 사라지게 하는 함수
-    private fun settingVirtualKeyboard() =
+    private fun hideVirtualKeyboard() =
         inputMethodManager.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
 
 
@@ -157,7 +157,7 @@ class SearchFragment : Fragment() {
             requireActivity().toast("검색어를 입력해주세요.")
             return
         }
-        settingVirtualKeyboard()
+        hideVirtualKeyboard()
         progressbar.isVisible = true
         requireActivity().currentFocus?.clearFocus()
 

@@ -23,7 +23,7 @@ class SaveDataSourcesImpl(
         return prefsUtils.getAllModels()
     }
 
-    override suspend fun removeAllModel() {
+    override suspend fun removeAllModels() {
         return prefsUtils.clear()
     }
 }

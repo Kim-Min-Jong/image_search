@@ -11,7 +11,7 @@ import com.sparta.imagesearch.extension.DateExtension.dateToString
 
 // 보관함 리사이클러뷰 어댑터 (ListAdapter - DiffUtil 사용)
 class SaveListViewAdapter(
-    private val onLongClicked: (IntegratedModel) -> Unit
+    private val onLongItemClicked: (IntegratedModel) -> Unit
 ) :
     ListAdapter<IntegratedModel, SaveListViewAdapter.SaveViewHolder>(IntegratedModel.DIFF_CALLBACK) {
 
@@ -22,7 +22,7 @@ class SaveListViewAdapter(
                 parent,
                 false
             ),
-            onLongClicked
+            onLongItemClicked
         )
 
     override fun onBindViewHolder(holder: SaveViewHolder, position: Int) {
@@ -31,13 +31,13 @@ class SaveListViewAdapter(
 
     inner class SaveViewHolder(
         private val binding: ItemBookmarkBinding,
-        private val onLongClicked: (IntegratedModel) -> Unit
+        private val onLongItemClicked: (IntegratedModel) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.root.setOnLongClickListener {
-                onLongClicked(
+                onLongItemClicked(
                     currentList[adapterPosition]
                 )
                 false

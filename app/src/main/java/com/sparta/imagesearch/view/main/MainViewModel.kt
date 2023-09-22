@@ -11,7 +11,7 @@ class MainViewModel: ViewModel() {
         get() = _networkStatus
 
     // 상태 설정
-    fun setStatus(isAvailable: Boolean) {
+    fun setNetworkStatus(isAvailable: Boolean) {
         _networkStatus.value = isAvailable
     }
 
