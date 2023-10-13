@@ -58,7 +58,7 @@ class SearchFragment : Fragment() {
     // 가상키보드 세팅을 위한 InputManager 변수
     private val inputMethodManager by lazy {
         requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    }
+    }//
 
     // 최하단일 때, 다음 페이지를 불러올 OnScrollListener
     private val endScrollListener by lazy {
