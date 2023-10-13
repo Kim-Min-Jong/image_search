@@ -115,7 +115,7 @@ class SaveFragment : Fragment() {
             .setMessage("삭제하시겠습니까?")
             .setPositiveButton("예") { _, _ ->
                 saveViewModel.removeModel(model)
-            }.setNegativeButton("아니오") { _, _ ->}
+            }.setNegativeButton("아니오") { _, _ -> }
             .setCancelable(false)
             .create()
             .show()

@@ -8,7 +8,7 @@ import retrofit2.Response
 // Repository 패턴의 검색 DataSource 구현체 - Retrofit API (KaKao API) 데이터만 주고 받음
 class SearchDataSourceImpl(
     private val searchService: KaKaoSearchService
-): SearchDataSource {
+) : SearchDataSource {
     override suspend fun getClips(
         token: String,
         query: String?,

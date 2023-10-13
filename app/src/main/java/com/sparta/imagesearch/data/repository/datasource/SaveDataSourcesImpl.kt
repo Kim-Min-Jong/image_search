@@ -6,7 +6,7 @@ import com.sparta.imagesearch.preference.PreferenceUtils
 // Repository 패턴의 저장 DataSource 구현체 - SharedPreference 데이터만 주고 받음
 class SaveDataSourcesImpl(
     private val prefsUtils: PreferenceUtils
-): SaveDataSource {
+) : SaveDataSource {
     override suspend fun getModel(key: String): IntegratedModel? {
         return prefsUtils.getModel(key)
     }

@@ -41,6 +41,7 @@ class SaveViewModel(
             result(response, _removeState)
         }
     }
+
     private fun <T> result(response: APIResponse<T>, livedata: MutableLiveData<APIResponse<T>>) {
         try {
             if (response.data != null) {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -129,13 +129,14 @@ class SearchFragment : Fragment() {
             mainViewModel.setNetworkStatus(connection)
         }
         mainViewModel.networkStatus.observe(viewLifecycleOwner) { isAvailable ->
-            when(isAvailable) {
+            when (isAvailable) {
                 true -> {
                     networkNoticeTextView.isVisible = false
                     searchRecyclerView.isVisible = true
                     searchButton.isEnabled = true
                     reSearch()
                 }
+
                 false -> {
                     networkNoticeTextView.isVisible = true
                     searchRecyclerView.isVisible = false

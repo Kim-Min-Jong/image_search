@@ -67,7 +67,7 @@ class ModelRepositoryImpl(
 
     override suspend fun removeAllModels(): APIResponse<Unit> {
         val response = saveDataSource.removeAllModels()
-        if(response != Unit) {
+        if (response != Unit) {
             return APIResponse.Error("삭제 실패")
         }
         return APIResponse.Success(response)

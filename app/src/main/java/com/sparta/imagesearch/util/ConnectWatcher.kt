@@ -22,7 +22,9 @@ class ConnectWatcher(
             }
         }
     }
-    private val connectivityManager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val connectivityManager =
+        context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
     override fun onActive() {
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
