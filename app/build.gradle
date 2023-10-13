@@ -15,6 +15,7 @@ android {
     defaultConfig {
         applicationId "com.sparta.imagesearch"
         minSdk 24
+        compileSdk 33
         targetSdk 33
         versionCode 1
         versionName "1.0"
