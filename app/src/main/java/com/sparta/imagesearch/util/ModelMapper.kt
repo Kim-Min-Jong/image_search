@@ -30,7 +30,8 @@ object ModelMapper {
         }
         return list
     }
-    fun ResponseImage.toIntegratedModelList(): List<IntegratedModel>  {
+
+    fun ResponseImage.toIntegratedModelList(): List<IntegratedModel> {
         val list = arrayListOf<IntegratedModel>()
         this.documents.forEach {
             list.add(
@@ -46,6 +47,7 @@ object ModelMapper {
         }
         return list
     }
+
     fun MutableCollection<out Any?>?.toIntegratedModelList(): List<IntegratedModel> {
         val list = arrayListOf<IntegratedModel>()
         for (item in this?.toList()!!) {

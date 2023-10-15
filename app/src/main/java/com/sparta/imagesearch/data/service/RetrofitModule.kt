@@ -14,7 +14,7 @@ object RetrofitModule {
             .addInterceptor(
                 //로깅 인터셉터
                 HttpLoggingInterceptor().apply {
-                    level = if(BuildConfig.DEBUG) {
+                    level = if (BuildConfig.DEBUG) {
                         HttpLoggingInterceptor.Level.BODY
                     } else {
                         HttpLoggingInterceptor.Level.NONE
@@ -22,6 +22,7 @@ object RetrofitModule {
                 }
             )
             .build()
+
     fun create(): KaKaoSearchService {
         return Retrofit.Builder()
             .baseUrl(Url.SEARCH_API_URL)

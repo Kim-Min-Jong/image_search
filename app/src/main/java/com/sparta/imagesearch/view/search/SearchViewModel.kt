@@ -53,7 +53,7 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getClips(token, query, page)
             response.data?.forEach {
-                if(it.thumbnailUrl in keyList){
+                if (it.thumbnailUrl in keyList) {
                     list.add(it.apply { isLiked = true })
                 } else {
                     list.add(it)
@@ -71,7 +71,7 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val response = modelRepository.getImages(token, query, page)
             response.data?.forEach {
-                if(it.thumbnailUrl in keyList){
+                if (it.thumbnailUrl in keyList) {
                     list.add(it.apply { isLiked = true })
                 } else {
                     list.add(it)

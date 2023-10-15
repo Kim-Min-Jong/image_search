@@ -1,6 +1,5 @@
 package com.sparta.imagesearch.data.model.clip
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Document(
