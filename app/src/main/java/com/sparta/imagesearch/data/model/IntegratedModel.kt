@@ -15,7 +15,7 @@ data class IntegratedModel(
     var isEnd: Boolean?
 ) {
     companion object {
-        val DIFF_CALLBACK = object: DiffUtil.ItemCallback<IntegratedModel>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IntegratedModel>() {
             override fun areItemsTheSame(
                 oldItem: IntegratedModel,
                 newItem: IntegratedModel

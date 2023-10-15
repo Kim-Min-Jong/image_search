@@ -15,7 +15,8 @@ class PreferenceUtils(context: Context) {
     private val searchPrefsName = SEARCH_PREFS_NAME
 
     private val prefs = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE)
-    private val orderingPrefs = context.getSharedPreferences(orderingPrefsName, Activity.MODE_PRIVATE)
+    private val orderingPrefs =
+        context.getSharedPreferences(orderingPrefsName, Activity.MODE_PRIVATE)
     private val searchPrefs = context.getSharedPreferences(searchPrefsName, Activity.MODE_PRIVATE)
 
     var keyword: String?
@@ -32,7 +33,7 @@ class PreferenceUtils(context: Context) {
     fun setModel(key: String, value: IntegratedModel?) {
         val editor = prefs.edit()
         val model = Gson().toJson(value, IntegratedModel::class.java)
-        if(value != null){
+        if (value != null) {
             editor.putString(key, model)
         } else {
             editor.putString(key, null)

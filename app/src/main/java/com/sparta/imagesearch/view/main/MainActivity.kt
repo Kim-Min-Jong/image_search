@@ -17,21 +17,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViews()
     }
-    private val mainViewModel by lazy{
+
+    private val mainViewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private fun initViews() = with(binding) {
         bottomNavView.setOnItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.home -> {
                     showFragment(SearchFragment.newInstance(), SearchFragment.TAG)
                     true
                 }
+
                 R.id.storage -> {
                     showFragment(SaveFragment.newInstance(), SaveFragment.TAG)
                     true
                 }
+
                 else -> false
             }
 
