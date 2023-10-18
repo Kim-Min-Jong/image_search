@@ -10,3 +10,5 @@
  - ViewModel은 repository가 local에서 데이터를 받아오는 지, remote에서 데이터를 받아오는 지 출처를 모르게 됨  
  - 결국 제공해주는 데이터를 이용만 하면 되므로, ViewModel은 비즈니스 로직에만 집중 할 수 있음    
 ![img_1.png](img_1.png)
+
+
